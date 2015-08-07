@@ -19,9 +19,18 @@ import io.airlift.slice.BasicSliceInput;
 import io.airlift.slice.DynamicSliceOutput;
 import io.airlift.slice.Slice;
 
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+
 public class BloomFilter
 {
     private com.google.common.hash.BloomFilter<Slice> instance;
+    private int expectedInsertions;
+    private double falsePositivePercentage;
+
+    public static final int DEFAULT_BLOOM_FILTER_EXPECTED_INSERTIONS = 10_000_000;
+    public static final double DEFAULT_BLOOM_FILTER_FALSE_POSITIVE_PERCENTAGE = 0.01;
 
     public static BloomFilter newInstance()
     {
@@ -37,7 +46,18 @@ public class BloomFilter
 
     private BloomFilter()
     {
-        Funnel<Slice> objFunnel = new Funnel<Slice>()
+        expectedInsertions = DEFAULT_BLOOM_FILTER_EXPECTED_INSERTIONS;
+        falsePositivePercentage = DEFAULT_BLOOM_FILTER_FALSE_POSITIVE_PERCENTAGE;
+        instance = newBloomFilter();
+    }
+
+    public void put(Slice s)
+    {
+        instance.put(s);
+    }
+
+    public Funnel<Slice> getFunnel() {
+        return new Funnel<Slice>()
         {
             @Override
             public void funnel(Slice s, PrimitiveSink into)
@@ -45,12 +65,6 @@ public class BloomFilter
                 into.putBytes(s.getBytes());
             }
         };
-        instance = com.google.common.hash.BloomFilter.create(objFunnel, 10_000_000, 0.01);
-    }
-
-    public void put(Slice s)
-    {
-        instance.put(s);
     }
 
     public boolean mightContain(Slice s)
@@ -61,26 +75,72 @@ public class BloomFilter
     private void load(Slice serialized)
     {
         BasicSliceInput input = serialized.getInput();
-        // @todo read input and convert to bloom filter instance
+
+        // Get the size of the bloom filter
+        int bfSize = input.readInt();
+
+        // Read the buffer
+        // @todo Don't read byte by byte, but read directly full thing into stream
+        byte[] bfBuf = new byte[bfSize];
+        for (int i = 0; i < bfSize; i++) {
+            bfBuf[i] = input.readByte();
+        }
+
+        // Input stream
+        ByteArrayInputStream in = new ByteArrayInputStream(bfBuf);
+
+        // Setup bloom filter
+        try {
+            instance = com.google.common.hash.BloomFilter.readFrom(in, getFunnel());
+        } catch (IOException ix) {
+            // @todo Log
+            instance = newBloomFilter();
+        }
+    }
+
+    private com.google.common.hash.BloomFilter<Slice> newBloomFilter() {
+        return com.google.common.hash.BloomFilter.create(getFunnel(), expectedInsertions, falsePositivePercentage);
     }
 
     public Slice serialize()
     {
-        int size = estimatedSerializedSize();
+        int size;
+        byte[] bytes = new byte[0];
+        try {
+            // Write bloom filter to bytes
+            ByteArrayOutputStream buffer = new ByteArrayOutputStream();
+            instance.writeTo(buffer);
+            bytes = buffer.toByteArray();
 
+            // Size "estimation" is actual
+            size = bytes.length;
+        } catch (IOException ix) {
+            // @todo Log
+            size = 0;
+        }
+
+        // To slice
         DynamicSliceOutput output = new DynamicSliceOutput(size);
-        // @todo write bytes here
+
+        // Write the length of the bloom filter
+        output.appendInt(size);
+
+        // Write the bloom filter
+        output.appendBytes(bytes);
 
         return output.slice();
     }
 
-    public int estimatedSerializedSize()
-    {
-        return 123; // @todo real estimate in bytes of the serialized length of the bloom filter
-    }
-
     public int estimatedInMemorySize()
     {
-        return 123; // @todo real estimate in bytes of the in memory object
+        // m = ceil((n * log(p)) / log(1.0 / (pow(2.0, log(2.0)))));
+        // k = round(log(2.0) * m / n);
+        // Source: http://hur.st/bloomfilter
+        double n = (double)expectedInsertions;
+        double p = falsePositivePercentage;
+        // @todo Optimize the constants
+        double m = Math.ceil((n * Math.log(p)) / Math.log(1.0 / (Math.pow(2.0, Math.log(2.0)))) );
+        //double k = Math.round(Math.log(2.0) * (m / n));
+        return (int)Math.round(m);
     }
 }
