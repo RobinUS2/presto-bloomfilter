@@ -29,13 +29,14 @@ import static com.facebook.presto.type.TypeUtils.parameterizedTypeName;
 public class BloomFilterType extends AbstractVariableWidthType
 {
     public static final BloomFilterType BLOOM_FILTER = new BloomFilterType();
+    public static final String TYPE = "BloomFilter";
 
     @JsonCreator
     // @todo check the (standard) type to use, probably binary?
     // this comes from the presto-ml ModelType which feels similar to a Bloom Filter
     public BloomFilterType()
     {
-        super(parameterizedTypeName("BloomFilter"), Slice.class);
+        super(parameterizedTypeName(BloomFilterType.TYPE), Slice.class);
     }
 
     @Override
