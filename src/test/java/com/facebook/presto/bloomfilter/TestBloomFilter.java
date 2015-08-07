@@ -14,13 +14,15 @@
 package com.facebook.presto.bloomfilter;
 
 import org.testng.annotations.Test;
+
+import static org.testng.Assert.assertNotNull;
 import static org.testng.Assert.assertTrue;
 
 public class TestBloomFilter
 {
     @Test
     public void testBloomFilterCreate() {
-        assertTrue(true);
-        // @todo real tests
+        BloomFilter bf = BloomFilter.newInstance();
+        assertNotNull(bf);
     }
 }

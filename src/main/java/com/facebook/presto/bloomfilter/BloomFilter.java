@@ -19,13 +19,24 @@ import io.airlift.slice.Slice;
 
 public class BloomFilter
 {
-    public static BloomFilter newInstance(Slice serialized)
+    public static BloomFilter newInstance()
     {
-        return new BloomFilter(serialized);
+        return new BloomFilter();
     }
 
-    private BloomFilter(Slice serialized)
+    public static BloomFilter newInstance(Slice serialized)
     {
+        BloomFilter bf = new BloomFilter();
+        bf.load(serialized);
+        return bf;
+    }
+
+    private BloomFilter()
+    {
+        // @todo simple bloomfilter
+    }
+
+    private void load(Slice serialized) {
         BasicSliceInput input = serialized.getInput();
         // @todo read input and convert to bloom filter instance
     }
@@ -35,6 +46,7 @@ public class BloomFilter
         int size = estimatedSerializedSize();
 
         DynamicSliceOutput output = new DynamicSliceOutput(size);
+        // @todo write bytes here
 
         return output.slice();
     }
