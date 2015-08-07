@@ -52,6 +52,9 @@ public class TestBloomFilterQueries
 
         // Use 2 bloom filters in a single query
         assertQuery("WITH a AS (SELECT bloom_filter('a') AS bf), b AS (SELECT bloom_filter('b') AS bf) SELECT bloom_filter_contains(a.bf, 'a'), bloom_filter_contains(a.bf, 'b'), bloom_filter_contains(b.bf, 'a'), bloom_filter_contains(b.bf, 'b') FROM a,b LIMIT 1", "SELECT true, false, false, true");
+
+        // Test streaming load
+        assertQueryTrue("WITH input AS (select 'a' AS uuid union select 'b' AS uuid union select 'c' AS uuid union select 'd' AS uuid), a AS (SELECT bloom_filter(input.uuid) AS bf FROM input) SELECT bloom_filter_contains(a.bf, 'a') FROM a LIMIT 1");
     }
 
     @Test
