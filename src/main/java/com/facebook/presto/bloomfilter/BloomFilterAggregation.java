@@ -31,6 +31,7 @@ public class BloomFilterAggregation {
             BloomFilterState state,
             @SqlType(VARCHAR) Slice slice)
     {
+        state.setBloomFilter(BloomFilter.newInstance()); // @todo Remove
         state.getBloomFilter().put(slice);
     }
 

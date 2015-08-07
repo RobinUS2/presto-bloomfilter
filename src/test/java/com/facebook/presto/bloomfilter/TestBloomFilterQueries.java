@@ -30,8 +30,7 @@ public class TestBloomFilterQueries
     public void testPrediction()
             throws Exception
     {
-        assertQuery("SELECT bloom_filter('test') AS bf", "SELECT 1");
-        assertQuery("WITH a AS (SELECT bloom_filter('test') AS bf) SELECT bloom_filter_contains(a.bf, 'test') FROM a", "SELECT 1");
+        assertQueryTrue("WITH a AS (SELECT bloom_filter('test') AS bf) SELECT bloom_filter_contains(a.bf, 'test') FROM a LIMIT 1");
     }
 
     private static LocalQueryRunner createLocalQueryRunner()
