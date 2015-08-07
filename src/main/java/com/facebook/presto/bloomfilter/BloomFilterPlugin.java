@@ -23,7 +23,7 @@ import java.util.List;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 
-public class BloomfilterFunctionsPlugin
+public class BloomFilterPlugin
         implements Plugin
 {
     private TypeManager typeManager;
@@ -38,7 +38,7 @@ public class BloomfilterFunctionsPlugin
     public <T> List<T> getServices(Class<T> type)
     {
         if (type == FunctionFactory.class) {
-            return ImmutableList.of(type.cast(new BloomfilterFunctionFactory(typeManager)));
+            return ImmutableList.of(type.cast(new BloomFilterFunctionFactory(typeManager)));
         }
         return ImmutableList.of();
     }

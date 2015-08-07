@@ -20,12 +20,12 @@ import com.facebook.presto.spi.type.TypeManager;
 
 import java.util.List;
 
-public class BloomfilterFunctionFactory
+public class BloomFilterFunctionFactory
         implements FunctionFactory
 {
     private final TypeManager typeManager;
 
-    public BloomfilterFunctionFactory(TypeManager typeManager)
+    public BloomFilterFunctionFactory(TypeManager typeManager)
     {
         this.typeManager = typeManager;
     }
@@ -34,7 +34,7 @@ public class BloomfilterFunctionFactory
     public List<ParametricFunction> listFunctions()
     {
         return new FunctionListBuilder(typeManager)
-                .scalar(BloomfilterFunctions.class)
+                .scalar(BloomFilterScalarFunctions.class)
                 .getFunctions();
     }
 }

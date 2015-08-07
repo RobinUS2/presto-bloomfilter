@@ -13,9 +13,9 @@
  */
 package com.facebook.presto.bloomfilter;
 
-public final class BloomfilterFunctions
+public final class BloomFilterScalarFunctions
 {
-    private BloomfilterFunctions()
+    private BloomFilterScalarFunctions()
     {
     }
 }
