@@ -19,6 +19,7 @@ import org.testng.annotations.Test;
 import static org.testng.Assert.assertFalse;
 import static org.testng.Assert.assertNotNull;
 import static org.testng.Assert.assertTrue;
+import static org.testng.Assert.assertEquals;
 
 public class TestBloomFilter
 {
@@ -36,5 +37,21 @@ public class TestBloomFilter
         bf.put(Slices.wrappedBuffer("robin".getBytes()));
         assertTrue(bf.mightContain(Slices.wrappedBuffer("robin".getBytes())));
         assertFalse(bf.mightContain(Slices.wrappedBuffer("verlangen".getBytes())));
+    }
+
+    @Test
+    public void testBloomFilterSizeEstimation()
+    {
+        // Default options (10MM items with 1% error rate)
+        BloomFilter bf = BloomFilter.newInstance();
+        assertEquals(bf.estimatedInMemorySize(), 11981323);
+
+        // Smaller
+        BloomFilter bf2 = BloomFilter.newInstance(100);
+        assertEquals(bf2.estimatedInMemorySize(), 120);
+
+        // Smaller with lower false positive percentage
+        BloomFilter bf3 = BloomFilter.newInstance(100, 0.001);
+        assertEquals(bf3.estimatedInMemorySize(), 180);
     }
 }

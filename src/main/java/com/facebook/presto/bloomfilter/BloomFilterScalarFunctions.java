@@ -16,12 +16,18 @@ package com.facebook.presto.bloomfilter;
 import com.facebook.presto.operator.scalar.ScalarFunction;
 import com.facebook.presto.spi.type.StandardTypes;
 import com.facebook.presto.type.SqlType;
+import com.google.common.cache.Cache;
+import com.google.common.cache.CacheBuilder;
+import com.google.common.hash.HashCode;
 import io.airlift.slice.Slice;
+import io.airlift.slice.Slices;
 
 import javax.annotation.Nullable;
 
 public final class BloomFilterScalarFunctions
 {
+    private static final Cache<HashCode, BloomFilter> BF_CACHE = CacheBuilder.newBuilder().maximumSize(20).build();
+
     private BloomFilterScalarFunctions()
     {
     }
@@ -31,8 +37,30 @@ public final class BloomFilterScalarFunctions
     @SqlType(StandardTypes.BOOLEAN)
     public static Boolean varcharBloomFilterContains(@SqlType(BloomFilterType.TYPE) Slice bloomFilterSlice, @SqlType(StandardTypes.VARCHAR) Slice slice)
     {
-        // @todo Implement cache
-        BloomFilter bf = BloomFilter.newInstance(bloomFilterSlice);
+        BloomFilter bf = getOrLoadBloomFilter(bloomFilterSlice);
         return bf.mightContain(slice);
+    }
+
+    @Nullable
+    @ScalarFunction("to_string")
+    @SqlType(StandardTypes.VARCHAR)
+    public static Slice bloomFilterToString(@SqlType(BloomFilterType.TYPE) Slice bloomFilterSlice)
+    {
+        BloomFilter bf = getOrLoadBloomFilter(bloomFilterSlice);
+        return Slices.wrappedBuffer(java.util.Base64.getEncoder().encode(bf.serialize().getBytes()));
+    }
+
+    private static BloomFilter getOrLoadBloomFilter(Slice bloomFilterSlice)
+    {
+        // Read hash
+        HashCode hash = HashCode.fromBytes(bloomFilterSlice.getBytes(0, 32));
+
+        // From cache
+        BloomFilter bf = BF_CACHE.getIfPresent(hash);
+        if (bf == null) {
+            bf = BloomFilter.newInstance(bloomFilterSlice);
+            BF_CACHE.put(hash, bf);
+        }
+        return bf;
     }
 }

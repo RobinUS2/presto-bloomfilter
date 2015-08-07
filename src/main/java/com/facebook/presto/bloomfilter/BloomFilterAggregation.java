@@ -18,6 +18,7 @@ import com.facebook.presto.operator.aggregation.CombineFunction;
 import com.facebook.presto.operator.aggregation.InputFunction;
 import com.facebook.presto.operator.aggregation.OutputFunction;
 import com.facebook.presto.spi.block.BlockBuilder;
+import com.facebook.presto.spi.type.StandardTypes;
 import com.facebook.presto.type.SqlType;
 import io.airlift.slice.Slice;
 
@@ -25,21 +26,50 @@ import static com.facebook.presto.spi.type.StandardTypes.VARCHAR;
 
 // @todo check decomposable, I think this means it should run in a single split, remove after implementing the combine
 @AggregationFunction(value = "bloom_filter", decomposable = false)
-public class BloomFilterAggregation {
+public class BloomFilterAggregation
+{
+    private BloomFilterAggregation()
+    {
+    }
+
     @InputFunction
     public static void input(
             BloomFilterState state,
             @SqlType(VARCHAR) Slice slice)
     {
-        BloomFilter bf = getOrCreateBloomFilter(state);
+        BloomFilter bf = getOrCreateBloomFilter(state, BloomFilter.DEFAULT_BLOOM_FILTER_EXPECTED_INSERTIONS, BloomFilter.DEFAULT_BLOOM_FILTER_FALSE_POSITIVE_PERCENTAGE);
         // Note: do not update the memory size as this is constant to our bloom filter implementation
         bf.put(slice);
     }
 
-    private static BloomFilter getOrCreateBloomFilter(BloomFilterState state) {
+    @InputFunction
+    public static void input(
+            BloomFilterState state,
+            @SqlType(VARCHAR) Slice slice,
+            @SqlType(StandardTypes.BIGINT) long expectedInsertions)
+    {
+        BloomFilter bf = getOrCreateBloomFilter(state, (int) expectedInsertions, BloomFilter.DEFAULT_BLOOM_FILTER_FALSE_POSITIVE_PERCENTAGE);
+        // Note: do not update the memory size as this is constant to our bloom filter implementation
+        bf.put(slice);
+    }
+
+    @InputFunction
+    public static void input(
+            BloomFilterState state,
+            @SqlType(VARCHAR) Slice slice,
+            @SqlType(StandardTypes.BIGINT) long expectedInsertions,
+            @SqlType(StandardTypes.DOUBLE) double falsePositivePercentage)
+    {
+        BloomFilter bf = getOrCreateBloomFilter(state, (int) expectedInsertions, falsePositivePercentage);
+        // Note: do not update the memory size as this is constant to our bloom filter implementation
+        bf.put(slice);
+    }
+
+    private static BloomFilter getOrCreateBloomFilter(BloomFilterState state, int expectedInsertions, double falsePositivePercentage)
+    {
         BloomFilter bf = state.getBloomFilter();
         if (bf == null) {
-            bf = BloomFilter.newInstance();
+            bf = BloomFilter.newInstance(expectedInsertions, falsePositivePercentage);
             state.setBloomFilter(bf);
             state.addMemoryUsage(bf.estimatedInMemorySize());
         }
@@ -49,6 +79,7 @@ public class BloomFilterAggregation {
     @CombineFunction
     public static void combine(BloomFilterState state, BloomFilterState otherState)
     {
+        // @todo Implement
         throw new UnsupportedOperationException("TODO");
     }
 

@@ -41,7 +41,8 @@ public class BloomFilterPlugin
         if (type == FunctionFactory.class) {
             // Register bloom filter functions
             return ImmutableList.of(type.cast(new BloomFilterFunctionFactory(typeManager)));
-        } else if (type == Type.class) {
+        }
+        else if (type == Type.class) {
             // Register bloom filter type
             return ImmutableList.of(type.cast(BloomFilterType.BLOOM_FILTER));
         }

@@ -2,6 +2,8 @@
 <checkstyle version="6.6">
 <file name="/Users/robin/Documents/presto-bloomfilter/src/main/java/com/facebook/presto/bloomfilter/BloomFilter.java">
 </file>
+<file name="/Users/robin/Documents/presto-bloomfilter/src/main/java/com/facebook/presto/bloomfilter/BloomFilterAggregation.java">
+</file>
 <file name="/Users/robin/Documents/presto-bloomfilter/src/main/java/com/facebook/presto/bloomfilter/BloomFilterFunctionFactory.java">
 </file>
 <file name="/Users/robin/Documents/presto-bloomfilter/src/main/java/com/facebook/presto/bloomfilter/BloomFilterPlugin.java">
@@ -10,10 +12,16 @@
 </file>
 <file name="/Users/robin/Documents/presto-bloomfilter/src/main/java/com/facebook/presto/bloomfilter/BloomFilterState.java">
 </file>
+<file name="/Users/robin/Documents/presto-bloomfilter/src/main/java/com/facebook/presto/bloomfilter/BloomFilterStateFactory.java">
+</file>
 <file name="/Users/robin/Documents/presto-bloomfilter/src/main/java/com/facebook/presto/bloomfilter/BloomFilterStateSerializer.java">
 </file>
 <file name="/Users/robin/Documents/presto-bloomfilter/src/main/java/com/facebook/presto/bloomfilter/BloomFilterType.java">
 </file>
 <file name="/Users/robin/Documents/presto-bloomfilter/src/test/java/com/facebook/presto/bloomfilter/TestBloomFilter.java">
+</file>
+<file name="/Users/robin/Documents/presto-bloomfilter/src/test/java/com/facebook/presto/bloomfilter/TestBloomFilterQueries.java">
+</file>
+<file name="/Users/robin/Documents/presto-bloomfilter/src/test/java/com/facebook/presto/bloomfilter/TestBloomFilterSerialization.java">
 </file>
 </checkstyle>

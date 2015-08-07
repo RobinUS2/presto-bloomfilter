@@ -23,9 +23,6 @@ import io.airlift.slice.Slice;
 
 import static com.facebook.presto.type.TypeUtils.parameterizedTypeName;
 
-// Layout is <size>:<bf>, where
-//   size: is an int describing the length of the bf bytes
-//   bf: is the serialized bloom filter
 public class BloomFilterType extends AbstractVariableWidthType
 {
     public static final BloomFilterType BLOOM_FILTER = new BloomFilterType();

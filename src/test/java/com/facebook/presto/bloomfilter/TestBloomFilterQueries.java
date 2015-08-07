@@ -1,8 +1,20 @@
+/*
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 package com.facebook.presto.bloomfilter;
 
 import com.facebook.presto.Session;
 import com.facebook.presto.metadata.FunctionFactory;
-import com.facebook.presto.operator.scalar.FunctionAssertions;
 import com.facebook.presto.spi.type.Type;
 import com.facebook.presto.testing.LocalQueryRunner;
 import com.facebook.presto.tests.AbstractTestQueryFramework;
@@ -11,12 +23,8 @@ import com.facebook.presto.type.ParametricType;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Iterables;
 import org.testng.annotations.Test;
-import com.facebook.presto.spi.type.BooleanType;
-
-import static com.facebook.presto.spi.type.VarcharType.VARCHAR;
 import static com.facebook.presto.testing.TestingSession.testSessionBuilder;
 import static com.facebook.presto.tpch.TpchMetadata.TINY_SCHEMA_NAME;
-import static org.testng.Assert.assertNotNull;
 
 public class TestBloomFilterQueries
         extends AbstractTestQueryFramework
@@ -27,11 +35,31 @@ public class TestBloomFilterQueries
     }
 
     @Test
-    public void testPrediction()
+    public void testBloomFilters()
             throws Exception
     {
+        // Test positive in bloom filter
         assertQueryTrue("WITH a AS (SELECT bloom_filter('test') AS bf) SELECT bloom_filter_contains(a.bf, 'test') FROM a LIMIT 1");
+
+        // Test negative in filter
         assertQuery("WITH a AS (SELECT bloom_filter('test') AS bf) SELECT bloom_filter_contains(a.bf, 'not-in-here') FROM a LIMIT 1", "SELECT false");
+
+        // Test with config (expected insertions)
+        assertQueryTrue("WITH a AS (SELECT bloom_filter('test', 10) AS bf) SELECT bloom_filter_contains(a.bf, 'test') FROM a LIMIT 1");
+
+        // Test with config (expected insertions AND false positive percentage)
+        assertQueryTrue("WITH a AS (SELECT bloom_filter('test', 10, 0.001) AS bf) SELECT bloom_filter_contains(a.bf, 'test') FROM a LIMIT 1");
+
+        // Use 2 bloom filters in a single query
+        assertQuery("WITH a AS (SELECT bloom_filter('a') AS bf), b AS (SELECT bloom_filter('b') AS bf) SELECT bloom_filter_contains(a.bf, 'a'), bloom_filter_contains(a.bf, 'b'), bloom_filter_contains(b.bf, 'a'), bloom_filter_contains(b.bf, 'b') FROM a,b LIMIT 1", "SELECT true, false, false, true");
+    }
+
+    @Test
+    public void testBloomFiltersTypeConversions()
+            throws Exception
+    {
+        // Test positive in bloom filter
+        assertQuery("SELECT to_string(bloom_filter('', 10))", "SELECT 'p9uesW3uj5I6NZ4K/ewi7VuBHfI89lDUiMNb6lkNZ5sWAAAAAQcAAAACAAAAAAAAAAAAAAAAAAAAAA=='");
     }
 
     private static LocalQueryRunner createLocalQueryRunner()

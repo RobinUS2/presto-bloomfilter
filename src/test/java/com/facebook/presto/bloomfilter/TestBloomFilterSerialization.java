@@ -17,9 +17,12 @@ import io.airlift.slice.Slice;
 import io.airlift.slice.Slices;
 import org.testng.annotations.Test;
 
-import static org.testng.Assert.*;
+import static org.testng.Assert.assertNotNull;
+import static org.testng.Assert.assertTrue;
+import static org.testng.Assert.assertFalse;
 
-public class TestBloomFilterSerialization {
+public class TestBloomFilterSerialization
+{
     @Test
     public void testBloomFilterCreate()
     {
