@@ -31,6 +31,7 @@ public class TestBloomFilterQueries
             throws Exception
     {
         assertQueryTrue("WITH a AS (SELECT bloom_filter('test') AS bf) SELECT bloom_filter_contains(a.bf, 'test') FROM a LIMIT 1");
+        assertQuery("WITH a AS (SELECT bloom_filter('test') AS bf) SELECT bloom_filter_contains(a.bf, 'not-in-here') FROM a LIMIT 1", "SELECT false");
     }
 
     private static LocalQueryRunner createLocalQueryRunner()
