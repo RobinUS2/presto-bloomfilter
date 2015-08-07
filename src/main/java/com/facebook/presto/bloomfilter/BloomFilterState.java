@@ -18,11 +18,13 @@ import com.facebook.presto.operator.aggregation.state.AccumulatorStateMetadata;
 
 import javax.validation.constraints.NotNull;
 
-@AccumulatorStateMetadata(stateSerializerClass = BloomFilterStateSerializer.class, stateFactoryClass = BloomFilterState.class)
+@AccumulatorStateMetadata(stateSerializerClass = BloomFilterStateSerializer.class, stateFactoryClass = BloomFilterStateFactory.class)
 public interface BloomFilterState extends AccumulatorState
 {
     @NotNull
     BloomFilter getBloomFilter();
 
     void setBloomFilter(BloomFilter value);
+
+    void addMemoryUsage(int value);
 }

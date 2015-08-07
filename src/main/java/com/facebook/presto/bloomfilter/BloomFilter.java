@@ -78,4 +78,9 @@ public class BloomFilter
     {
         return 123; // @todo real estimate in bytes of the serialized length of the bloom filter
     }
+
+    public int estimatedInMemorySize()
+    {
+        return 123; // @todo real estimate in bytes of the in memory object
+    }
 }
