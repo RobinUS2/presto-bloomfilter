@@ -1,0 +1,3 @@
+com/facebook/presto/bloomfilter/TestBloomFilter.class
+com/facebook/presto/bloomfilter/TestBloomFilterSerialization.class
+com/facebook/presto/bloomfilter/TestBloomFilterQueries.class
