@@ -18,11 +18,10 @@ import com.facebook.presto.spi.block.Block;
 import com.facebook.presto.spi.block.BlockBuilder;
 import com.facebook.presto.spi.type.AbstractVariableWidthType;
 import com.facebook.presto.spi.type.SqlVarbinary;
-import com.facebook.presto.spi.type.StandardTypes;
 import com.fasterxml.jackson.annotation.JsonCreator;
 import io.airlift.slice.Slice;
 
-import static com.facebook.presto.spi.type.TypeSignature.parseTypeSignature;
+import static com.facebook.presto.type.TypeUtils.parameterizedTypeName;
 
 // Layout is <size>:<bf>, where
 //   size: is an int describing the length of the bf bytes
@@ -32,10 +31,11 @@ public class BloomFilterType extends AbstractVariableWidthType
     public static final BloomFilterType BLOOM_FILTER = new BloomFilterType();
 
     @JsonCreator
-    // @todo check the standard type to use, probably binary?
+    // @todo check the (standard) type to use, probably binary?
+    // this comes from the presto-ml ModelType which feels similar to a Bloom Filter
     public BloomFilterType()
     {
-        super(parseTypeSignature(StandardTypes.VARBINARY), Slice.class);
+        super(parameterizedTypeName("BloomFilter"), Slice.class);
     }
 
     @Override
