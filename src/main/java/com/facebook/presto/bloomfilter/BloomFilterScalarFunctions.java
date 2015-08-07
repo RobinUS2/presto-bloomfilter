@@ -31,7 +31,8 @@ public final class BloomFilterScalarFunctions
     @SqlType(StandardTypes.BOOLEAN)
     public static Boolean varcharBloomFilterContains(@SqlType(BloomFilterType.TYPE) Slice bloomFilterSlice, @SqlType(StandardTypes.VARCHAR) Slice slice)
     {
-        // @todo Implement
-        return false;
+        // @todo Implement cache
+        BloomFilter bf = BloomFilter.newInstance(bloomFilterSlice);
+        return bf.mightContain(slice);
     }
 }

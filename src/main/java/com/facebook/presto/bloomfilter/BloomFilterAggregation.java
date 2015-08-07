@@ -31,8 +31,19 @@ public class BloomFilterAggregation {
             BloomFilterState state,
             @SqlType(VARCHAR) Slice slice)
     {
-        state.setBloomFilter(BloomFilter.newInstance()); // @todo Remove
-        state.getBloomFilter().put(slice);
+        BloomFilter bf = getOrCreateBloomFilter(state);
+        // Note: do not update the memory size as this is constant to our bloom filter implementation
+        bf.put(slice);
+    }
+
+    private static BloomFilter getOrCreateBloomFilter(BloomFilterState state) {
+        BloomFilter bf = state.getBloomFilter();
+        if (bf == null) {
+            bf = BloomFilter.newInstance();
+            state.setBloomFilter(bf);
+            state.addMemoryUsage(bf.estimatedInMemorySize());
+        }
+        return bf;
     }
 
     @CombineFunction
