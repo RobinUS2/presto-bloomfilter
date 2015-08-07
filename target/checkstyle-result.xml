@@ -1,9 +1,17 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <checkstyle version="6.6">
+<file name="/Users/robin/Documents/presto-bloomfilter/src/main/java/com/facebook/presto/bloomfilter/BloomFilter.java">
+</file>
 <file name="/Users/robin/Documents/presto-bloomfilter/src/main/java/com/facebook/presto/bloomfilter/BloomFilterFunctionFactory.java">
 </file>
 <file name="/Users/robin/Documents/presto-bloomfilter/src/main/java/com/facebook/presto/bloomfilter/BloomFilterPlugin.java">
 </file>
 <file name="/Users/robin/Documents/presto-bloomfilter/src/main/java/com/facebook/presto/bloomfilter/BloomFilterScalarFunctions.java">
+</file>
+<file name="/Users/robin/Documents/presto-bloomfilter/src/main/java/com/facebook/presto/bloomfilter/BloomFilterState.java">
+</file>
+<file name="/Users/robin/Documents/presto-bloomfilter/src/main/java/com/facebook/presto/bloomfilter/BloomFilterStateSerializer.java">
+</file>
+<file name="/Users/robin/Documents/presto-bloomfilter/src/main/java/com/facebook/presto/bloomfilter/BloomFilterType.java">
 </file>
 </checkstyle>

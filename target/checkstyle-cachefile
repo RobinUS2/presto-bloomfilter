@@ -1,5 +1,9 @@
-#Fri Aug 07 09:32:56 CEST 2015
+#Fri Aug 07 10:06:19 CEST 2015
 /Users/robin/Documents/presto-bloomfilter/src/main/java/com/facebook/presto/bloomfilter/BloomFilterScalarFunctions.java=1438932753000
+/Users/robin/Documents/presto-bloomfilter/src/main/java/com/facebook/presto/bloomfilter/BloomFilterState.java=1438934402000
+/Users/robin/Documents/presto-bloomfilter/src/main/java/com/facebook/presto/bloomfilter/BloomFilter.java=1438934419000
 /Users/robin/Documents/presto-bloomfilter/src/main/java/com/facebook/presto/bloomfilter/BloomFilterFunctionFactory.java=1438932771000
+/Users/robin/Documents/presto-bloomfilter/src/main/java/com/facebook/presto/bloomfilter/BloomFilterType.java=1438934504000
 /Users/robin/Documents/presto-bloomfilter/src/main/java/com/facebook/presto/bloomfilter/BloomFilterPlugin.java=1438932771000
+/Users/robin/Documents/presto-bloomfilter/src/main/java/com/facebook/presto/bloomfilter/BloomFilterStateSerializer.java=1438934494000
 configuration*?=04F9499500945ACC7CB7ACD64B63CBFD55BB0DED
