@@ -34,8 +34,7 @@ public class BloomfilterFunctionFactory
     public List<ParametricFunction> listFunctions()
     {
         return new FunctionListBuilder(typeManager)
-//                .scalar(TeradataStringFunctions.class)
-//                .scalar(TeradataDateFunctions.class)
+                .scalar(BloomfilterFunctions.class)
                 .getFunctions();
     }
 }

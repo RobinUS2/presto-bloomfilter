@@ -2,6 +2,8 @@
 <checkstyle version="6.6">
 <file name="/Users/robin/Documents/presto-bloomfilter/src/main/java/com/facebook/presto/bloomfilter/BloomfilterFunctionFactory.java">
 </file>
+<file name="/Users/robin/Documents/presto-bloomfilter/src/main/java/com/facebook/presto/bloomfilter/BloomfilterFunctions.java">
+</file>
 <file name="/Users/robin/Documents/presto-bloomfilter/src/main/java/com/facebook/presto/bloomfilter/BloomfilterFunctionsPlugin.java">
 </file>
 </checkstyle>

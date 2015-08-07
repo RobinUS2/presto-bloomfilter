@@ -1,2 +1,3 @@
 com/facebook/presto/bloomfilter/BloomfilterFunctionsPlugin.class
+com/facebook/presto/bloomfilter/BloomfilterFunctions.class
 com/facebook/presto/bloomfilter/BloomfilterFunctionFactory.class
