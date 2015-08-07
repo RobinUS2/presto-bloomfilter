@@ -2,39 +2,39 @@
 <testng-results skipped="0" failed="0" total="6" passed="6">
   <reporter-output>
   </reporter-output>
-  <suite name="Command line suite" duration-ms="1474" started-at="2015-08-07T13:35:40Z" finished-at="2015-08-07T13:35:41Z">
+  <suite name="Command line suite" duration-ms="1432" started-at="2015-08-07T13:38:03Z" finished-at="2015-08-07T13:38:04Z">
     <groups>
     </groups>
-    <test name="Command line test" duration-ms="1474" started-at="2015-08-07T13:35:40Z" finished-at="2015-08-07T13:35:41Z">
+    <test name="Command line test" duration-ms="1432" started-at="2015-08-07T13:38:03Z" finished-at="2015-08-07T13:38:04Z">
       <class name="com.facebook.presto.bloomfilter.TestBloomFilterQueries">
-        <test-method status="PASS" signature="testBloomFilters()[pri:0, instance:com.facebook.presto.bloomfilter.TestBloomFilterQueries@287f7811]" name="testBloomFilters" duration-ms="1463" started-at="2015-08-07T19:20:40Z" finished-at="2015-08-07T19:20:41Z">
+        <test-method status="PASS" signature="testBloomFilters()[pri:0, instance:com.facebook.presto.bloomfilter.TestBloomFilterQueries@287f7811]" name="testBloomFilters" duration-ms="1419" started-at="2015-08-07T19:23:03Z" finished-at="2015-08-07T19:23:04Z">
           <reporter-output>
           </reporter-output>
         </test-method> <!-- testBloomFilters -->
-        <test-method status="PASS" signature="testBloomFiltersTypeConversions()[pri:0, instance:com.facebook.presto.bloomfilter.TestBloomFilterQueries@287f7811]" name="testBloomFiltersTypeConversions" duration-ms="714" started-at="2015-08-07T19:20:40Z" finished-at="2015-08-07T19:20:40Z">
+        <test-method status="PASS" signature="testBloomFiltersTypeConversions()[pri:0, instance:com.facebook.presto.bloomfilter.TestBloomFilterQueries@287f7811]" name="testBloomFiltersTypeConversions" duration-ms="635" started-at="2015-08-07T19:23:03Z" finished-at="2015-08-07T19:23:04Z">
           <reporter-output>
           </reporter-output>
         </test-method> <!-- testBloomFiltersTypeConversions -->
       </class> <!-- com.facebook.presto.bloomfilter.TestBloomFilterQueries -->
       <class name="com.facebook.presto.bloomfilter.TestBloomFilterSerialization">
-        <test-method status="PASS" signature="testBloomFilterCreate()[pri:0, instance:com.facebook.presto.bloomfilter.TestBloomFilterSerialization@6e1d4137]" name="testBloomFilterCreate" duration-ms="480" started-at="2015-08-07T19:20:40Z" finished-at="2015-08-07T19:20:40Z">
+        <test-method status="PASS" signature="testBloomFilterCreate()[pri:0, instance:com.facebook.presto.bloomfilter.TestBloomFilterSerialization@6e1d4137]" name="testBloomFilterCreate" duration-ms="362" started-at="2015-08-07T19:23:03Z" finished-at="2015-08-07T19:23:03Z">
           <reporter-output>
           </reporter-output>
         </test-method> <!-- testBloomFilterCreate -->
       </class> <!-- com.facebook.presto.bloomfilter.TestBloomFilterSerialization -->
       <class name="com.facebook.presto.bloomfilter.TestBloomFilter">
-        <test-method status="PASS" signature="testBloomFilterElementExists()[pri:0, instance:com.facebook.presto.bloomfilter.TestBloomFilter@7fc645e4]" name="testBloomFilterElementExists" duration-ms="36" started-at="2015-08-07T19:20:40Z" finished-at="2015-08-07T19:20:40Z">
+        <test-method status="PASS" signature="testBloomFilterElementExists()[pri:0, instance:com.facebook.presto.bloomfilter.TestBloomFilter@7fc645e4]" name="testBloomFilterElementExists" duration-ms="39" started-at="2015-08-07T19:23:03Z" finished-at="2015-08-07T19:23:03Z">
           <reporter-output>
           </reporter-output>
         </test-method> <!-- testBloomFilterElementExists -->
-        <test-method status="PASS" signature="testBloomFilterCreate()[pri:0, instance:com.facebook.presto.bloomfilter.TestBloomFilter@7fc645e4]" name="testBloomFilterCreate" duration-ms="28" started-at="2015-08-07T19:20:40Z" finished-at="2015-08-07T19:20:40Z">
-          <reporter-output>
-          </reporter-output>
-        </test-method> <!-- testBloomFilterCreate -->
-        <test-method status="PASS" signature="testBloomFilterSizeEstimation()[pri:0, instance:com.facebook.presto.bloomfilter.TestBloomFilter@7fc645e4]" name="testBloomFilterSizeEstimation" duration-ms="28" started-at="2015-08-07T19:20:40Z" finished-at="2015-08-07T19:20:40Z">
+        <test-method status="PASS" signature="testBloomFilterSizeEstimation()[pri:0, instance:com.facebook.presto.bloomfilter.TestBloomFilter@7fc645e4]" name="testBloomFilterSizeEstimation" duration-ms="32" started-at="2015-08-07T19:23:03Z" finished-at="2015-08-07T19:23:03Z">
           <reporter-output>
           </reporter-output>
         </test-method> <!-- testBloomFilterSizeEstimation -->
+        <test-method status="PASS" signature="testBloomFilterCreate()[pri:0, instance:com.facebook.presto.bloomfilter.TestBloomFilter@7fc645e4]" name="testBloomFilterCreate" duration-ms="32" started-at="2015-08-07T19:23:03Z" finished-at="2015-08-07T19:23:03Z">
+          <reporter-output>
+          </reporter-output>
+        </test-method> <!-- testBloomFilterCreate -->
       </class> <!-- com.facebook.presto.bloomfilter.TestBloomFilter -->
     </test> <!-- Command line test -->
   </suite> <!-- Command line suite -->
