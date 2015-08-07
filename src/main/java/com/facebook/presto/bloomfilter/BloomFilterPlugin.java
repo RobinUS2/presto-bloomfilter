@@ -15,6 +15,7 @@ package com.facebook.presto.bloomfilter;
 
 import com.facebook.presto.metadata.FunctionFactory;
 import com.facebook.presto.spi.Plugin;
+import com.facebook.presto.spi.type.Type;
 import com.facebook.presto.spi.type.TypeManager;
 import com.google.common.collect.ImmutableList;
 
@@ -38,7 +39,11 @@ public class BloomFilterPlugin
     public <T> List<T> getServices(Class<T> type)
     {
         if (type == FunctionFactory.class) {
+            // Register bloom filter functions
             return ImmutableList.of(type.cast(new BloomFilterFunctionFactory(typeManager)));
+        } else if (type == Type.class) {
+            // Register bloom filter type
+            return ImmutableList.of(type.cast(BloomFilterType.BLOOM_FILTER));
         }
         return ImmutableList.of();
     }

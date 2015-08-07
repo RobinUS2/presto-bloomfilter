@@ -18,12 +18,15 @@ import com.facebook.presto.spi.type.StandardTypes;
 import com.facebook.presto.type.SqlType;
 import io.airlift.slice.Slice;
 
+import javax.annotation.Nullable;
+
 public final class BloomFilterScalarFunctions
 {
     private BloomFilterScalarFunctions()
     {
     }
 
+    @Nullable
     @ScalarFunction("bloom_filter_contains") // @todo Or should we use bloom_filter_might_contain? For now I think the name Bloom Filter indicates the fact it is probabilistic
     @SqlType(StandardTypes.BOOLEAN)
     public static Boolean varcharBloomFilterContains(@SqlType(BloomFilterType.TYPE) Slice bloomFilterSlice, @SqlType(StandardTypes.VARCHAR) Slice slice)

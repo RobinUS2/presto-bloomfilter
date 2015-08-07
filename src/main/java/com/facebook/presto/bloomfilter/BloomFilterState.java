@@ -14,9 +14,11 @@
 package com.facebook.presto.bloomfilter;
 
 import com.facebook.presto.operator.aggregation.state.AccumulatorState;
+import com.facebook.presto.operator.aggregation.state.AccumulatorStateMetadata;
 
 import javax.validation.constraints.NotNull;
 
+@AccumulatorStateMetadata(stateSerializerClass = BloomFilterStateSerializer.class, stateFactoryClass = BloomFilterState.class)
 public interface BloomFilterState extends AccumulatorState
 {
     @NotNull
