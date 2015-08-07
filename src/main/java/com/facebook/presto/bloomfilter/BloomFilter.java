@@ -74,6 +74,12 @@ public class BloomFilter
         instance.put(s);
     }
 
+    public BloomFilter putAll(BloomFilter other)
+    {
+        instance.putAll(other.instance);
+        return this;
+    }
+
     public Funnel<Slice> getFunnel()
     {
         return new Funnel<Slice>()
