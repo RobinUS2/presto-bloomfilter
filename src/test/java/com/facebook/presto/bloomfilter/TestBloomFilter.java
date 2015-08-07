@@ -13,6 +13,7 @@
  */
 package com.facebook.presto.bloomfilter;
 
+import io.airlift.slice.Slices;
 import org.testng.annotations.Test;
 
 import static org.testng.Assert.assertNotNull;
@@ -21,8 +22,17 @@ import static org.testng.Assert.assertTrue;
 public class TestBloomFilter
 {
     @Test
-    public void testBloomFilterCreate() {
+    public void testBloomFilterCreate()
+    {
         BloomFilter bf = BloomFilter.newInstance();
         assertNotNull(bf);
+    }
+
+    @Test
+    public void testBloomFilterElementExists()
+    {
+        BloomFilter bf = BloomFilter.newInstance();
+        bf.put(Slices.wrappedBuffer("robin".getBytes()));
+        assertTrue(bf.mightContain(Slices.wrappedBuffer("robin".getBytes())));
     }
 }

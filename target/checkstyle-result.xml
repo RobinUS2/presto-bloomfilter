@@ -14,4 +14,6 @@
 </file>
 <file name="/Users/robin/Documents/presto-bloomfilter/src/main/java/com/facebook/presto/bloomfilter/BloomFilterType.java">
 </file>
+<file name="/Users/robin/Documents/presto-bloomfilter/src/test/java/com/facebook/presto/bloomfilter/TestBloomFilter.java">
+</file>
 </checkstyle>

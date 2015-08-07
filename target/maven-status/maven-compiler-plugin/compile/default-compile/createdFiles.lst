@@ -2,6 +2,7 @@ com/facebook/presto/bloomfilter/BloomFilter.class
 com/facebook/presto/bloomfilter/BloomFilterType.class
 com/facebook/presto/bloomfilter/BloomFilterFunctionFactory.class
 com/facebook/presto/bloomfilter/BloomFilterPlugin.class
+com/facebook/presto/bloomfilter/BloomFilter$1.class
 com/facebook/presto/bloomfilter/BloomFilterScalarFunctions.class
 com/facebook/presto/bloomfilter/BloomFilterState.class
 com/facebook/presto/bloomfilter/BloomFilterStateSerializer.class

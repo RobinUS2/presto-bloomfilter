@@ -13,12 +13,16 @@
  */
 package com.facebook.presto.bloomfilter;
 
+import com.google.common.hash.Funnel;
+import com.google.common.hash.PrimitiveSink;
 import io.airlift.slice.BasicSliceInput;
 import io.airlift.slice.DynamicSliceOutput;
 import io.airlift.slice.Slice;
 
 public class BloomFilter
 {
+    private com.google.common.hash.BloomFilter<Slice> instance;
+
     public static BloomFilter newInstance()
     {
         return new BloomFilter();
@@ -33,10 +37,29 @@ public class BloomFilter
 
     private BloomFilter()
     {
-        // @todo simple bloomfilter
+        Funnel<Slice> objFunnel = new Funnel<Slice>()
+        {
+            @Override
+            public void funnel(Slice s, PrimitiveSink into)
+            {
+                into.putBytes(s.getBytes());
+            }
+        };
+        instance = com.google.common.hash.BloomFilter.create(objFunnel, 10_000_000, 0.01);
     }
 
-    private void load(Slice serialized) {
+    public void put(Slice s)
+    {
+        instance.put(s);
+    }
+
+    public boolean mightContain(Slice s)
+    {
+        return instance.mightContain(s);
+    }
+
+    private void load(Slice serialized)
+    {
         BasicSliceInput input = serialized.getInput();
         // @todo read input and convert to bloom filter instance
     }

@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testng-results skipped="0" failed="0" total="2" passed="2">
+  <reporter-output>
+  </reporter-output>
+  <suite name="com.facebook.presto.bloomfilter.TestBloomFilter" duration-ms="75" started-at="2015-08-07T08:56:28Z" finished-at="2015-08-07T08:56:28Z">
+    <groups>
+    </groups>
+    <test name="Command line test" duration-ms="75" started-at="2015-08-07T08:56:28Z" finished-at="2015-08-07T08:56:28Z">
+      <class name="com.facebook.presto.bloomfilter.TestBloomFilter">
+        <test-method status="PASS" signature="testBloomFilterCreate()[pri:0, instance:com.facebook.presto.bloomfilter.TestBloomFilter@5f375618]" name="testBloomFilterCreate" duration-ms="35" started-at="2015-08-07T14:41:28Z" finished-at="2015-08-07T14:41:28Z">
+          <reporter-output>
+          </reporter-output>
+        </test-method> <!-- testBloomFilterCreate -->
+        <test-method status="PASS" signature="testBloomFilterElementExists()[pri:0, instance:com.facebook.presto.bloomfilter.TestBloomFilter@5f375618]" name="testBloomFilterElementExists" duration-ms="62" started-at="2015-08-07T14:41:28Z" finished-at="2015-08-07T14:41:28Z">
+          <reporter-output>
+          </reporter-output>
+        </test-method> <!-- testBloomFilterElementExists -->
+      </class> <!-- com.facebook.presto.bloomfilter.TestBloomFilter -->
+    </test> <!-- Command line test -->
+  </suite> <!-- com.facebook.presto.bloomfilter.TestBloomFilter -->
+</testng-results>
