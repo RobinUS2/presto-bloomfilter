@@ -42,9 +42,17 @@ Functions
 There are tho types of functions, aggregation and scalar. 
 
 ### Aggregation
-`bloom_filter(<element>)` -> BloomFilter
+`bloom_filter(<element:VARCHAR>)` -> BloomFilter
 
 Will create a Bloom Filter with default settings. Expected insertions are 10 000 000 items with an accepted false positive percentage of 1% (0.01).
+
+`bloom_filter(<element:VARCHAR>, <expected_insertions:INT>)` -> BloomFilter
+
+Will create a Bloom Filter with expected inesrtions hint (amount of elements you expect to put in the Bloom Filter) default false positive settings.
+
+`bloom_filter(<element:VARCHAR>, <expected_insertions:INT>, <false_positive_percentage:DOUBLE)` -> BloomFilter
+
+Will create a Bloom Filter with custom settings. Percentage should be in the range [0-1].
 
 ### Scalar
 `bloom_filter_contains(<BloomFilter>, <element>)` -> boolean
