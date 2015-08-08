@@ -40,6 +40,22 @@ public class TestBloomFilter
     }
 
     @Test
+    public void testBloomFilterMerge()
+    {
+        BloomFilter bf = BloomFilter.newInstance();
+        bf.put(Slices.wrappedBuffer("robin".getBytes()));
+
+        BloomFilter bf2 = BloomFilter.newInstance();
+        bf2.put(Slices.wrappedBuffer("verlangen".getBytes()));
+
+        // Merge
+        bf.putAll(bf2);
+
+        // Check whether contents of the second BF can be found
+        assertTrue(bf.mightContain(Slices.wrappedBuffer("verlangen".getBytes())));
+    }
+
+    @Test
     public void testBloomFilterSizeEstimation()
     {
         // Default options (10MM items with 1% error rate)
