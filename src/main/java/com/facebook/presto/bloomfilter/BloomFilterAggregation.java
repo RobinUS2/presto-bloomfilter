@@ -24,7 +24,6 @@ import io.airlift.slice.Slice;
 
 import static com.facebook.presto.spi.type.StandardTypes.VARCHAR;
 
-// @todo check decomposable, I think this means it should run in a single split, remove after implementing the combine
 @AggregationFunction(value = "bloom_filter")
 public class BloomFilterAggregation
 {

@@ -33,7 +33,7 @@ public final class BloomFilterScalarFunctions
     }
 
     @Nullable
-    @ScalarFunction("bloom_filter_contains") // @todo Or should we use bloom_filter_might_contain? For now I think the name Bloom Filter indicates the fact it is probabilistic
+    @ScalarFunction("bloom_filter_contains") // For now I think the name Bloom Filter indicates the fact it is probabilistic. bloom_filter_might_contain would be an alternative but I think it's too verbose.
     @SqlType(StandardTypes.BOOLEAN)
     public static Boolean varcharBloomFilterContains(@SqlType(BloomFilterType.TYPE) Slice bloomFilterSlice, @SqlType(StandardTypes.VARCHAR) Slice slice)
     {

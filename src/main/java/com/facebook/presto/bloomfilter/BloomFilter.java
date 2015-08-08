@@ -37,6 +37,8 @@ public class BloomFilter
     public static final int DEFAULT_BLOOM_FILTER_EXPECTED_INSERTIONS = 10_000_000;
     public static final double DEFAULT_BLOOM_FILTER_FALSE_POSITIVE_PERCENTAGE = 0.01;
 
+    public static final double BF_MEM_CONSTANT = Math.log(1.0 / (Math.pow(2.0, Math.log(2.0))));
+
     public static BloomFilter newInstance()
     {
         return new BloomFilter(DEFAULT_BLOOM_FILTER_EXPECTED_INSERTIONS, DEFAULT_BLOOM_FILTER_FALSE_POSITIVE_PERCENTAGE);
@@ -174,11 +176,7 @@ public class BloomFilter
         // m = ceil((n * log(p)) / log(1.0 / (pow(2.0, log(2.0)))));
         // k = round(log(2.0) * m / n);
         // Source: http://hur.st/bloomfilter
-        double n = (double) expectedInsertions;
-        double p = falsePositivePercentage;
-        // @todo Optimize the constants
-        double m = Math.ceil((n * Math.log(p)) / Math.log(1.0 / (Math.pow(2.0, Math.log(2.0))))) / 8.0D;
-        //double k = Math.round(Math.log(2.0) * (m / n));
+        double m = Math.ceil(((double) expectedInsertions * Math.log(falsePositivePercentage)) / BF_MEM_CONSTANT) / 8.0D;
         return (int) Math.round(m);
     }
 }

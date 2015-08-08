@@ -29,8 +29,6 @@ public class BloomFilterType extends AbstractVariableWidthType
     public static final String TYPE = "BloomFilter";
 
     @JsonCreator
-    // @todo check the (standard) type to use, probably binary?
-    // this comes from the presto-ml ModelType which feels similar to a Bloom Filter
     public BloomFilterType()
     {
         super(parameterizedTypeName(BloomFilterType.TYPE), Slice.class);
