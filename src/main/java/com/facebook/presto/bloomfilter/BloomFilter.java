@@ -116,14 +116,16 @@ public class BloomFilter
         int bfSize = input.readInt();
 
         // Read the buffer
-        // @todo Don't read byte by byte, but read directly full thing into stream
-        byte[] bfBuf = new byte[bfSize];
-        for (int i = 0; i < bfSize; i++) {
-            bfBuf[i] = input.readByte();
+        ByteArrayOutputStream out = new ByteArrayOutputStream();
+        try {
+            input.readBytes(out, bfSize);
+        }
+        catch (IOException ix) {
+            // @todo Log
         }
 
         // Input stream
-        ByteArrayInputStream in = new ByteArrayInputStream(bfBuf);
+        ByteArrayInputStream in = new ByteArrayInputStream(out.toByteArray());
 
         // Setup bloom filter
         try {
