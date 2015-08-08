@@ -21,6 +21,7 @@ import io.airlift.log.Logger;
 import io.airlift.slice.BasicSliceInput;
 import io.airlift.slice.DynamicSliceOutput;
 import io.airlift.slice.Slice;
+import org.xerial.snappy.Snappy;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
@@ -141,8 +142,18 @@ public class BloomFilter
             // @todo Log
         }
 
+        // Uncompress
+        byte[] uncompressed;
+        try {
+            uncompressed = Snappy.uncompress(out.toByteArray());
+        }
+        catch (IOException ix) {
+            // @todo Log
+            uncompressed = new byte[0];
+        }
+
         // Input stream
-        ByteArrayInputStream in = new ByteArrayInputStream(out.toByteArray());
+        ByteArrayInputStream in = new ByteArrayInputStream(uncompressed);
 
         // Setup bloom filter
         try {
@@ -171,17 +182,24 @@ public class BloomFilter
             ByteArrayOutputStream buffer = new ByteArrayOutputStream();
             instance.writeTo(buffer);
             bytes = buffer.toByteArray();
-
-            // Size "estimation" is actual
-            size = bytes.length;
         }
         catch (IOException ix) {
             // @todo Log
-            size = 0;
         }
 
         // Create hash
         byte[] bfHash = Hashing.sha256().hashBytes(bytes).asBytes();
+
+        // Compress
+        byte[] compressed;
+        try {
+            compressed = Snappy.compress(bytes);
+        }
+        catch (IOException ix) {
+            // @todo Log
+            compressed = new byte[0];
+        }
+        size = compressed.length;
 
         // To slice
         DynamicSliceOutput output = new DynamicSliceOutput(size);
@@ -193,7 +211,7 @@ public class BloomFilter
         output.appendInt(size);
 
         // Write the bloom filter
-        output.appendBytes(bytes);
+        output.appendBytes(compressed);
 
         return output.slice();
     }

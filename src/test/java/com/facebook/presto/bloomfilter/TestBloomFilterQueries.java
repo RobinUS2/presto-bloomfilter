@@ -68,7 +68,7 @@ public class TestBloomFilterQueries
             throws Exception
     {
         // Test positive in bloom filter
-        assertQuery("SELECT to_string(bloom_filter('', 10))", "SELECT 'p9uesW3uj5I6NZ4K/ewi7VuBHfI89lDUiMNb6lkNZ5sWAAAAAQcAAAACAAAAAAAAAAAAAAAAAAAAAA=='");
+        assertQuery("SELECT to_string(bloom_filter('', 10))", "SELECT 'p9uesW3uj5I6NZ4K/ewi7VuBHfI89lDUiMNb6lkNZ5sYAAAAFlQBBwAAAAIAAAAAAAAAAAAAAAAAAAAA'");
     }
 
     private static LocalQueryRunner createLocalQueryRunner()
