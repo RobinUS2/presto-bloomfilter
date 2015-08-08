@@ -62,3 +62,13 @@ Returns ``TRUE`` if the item is probably in the set and returns ``FALSE`` if it 
 Bloom Filters
 -------------
 This project uses the [Bloom Filter](https://en.wikipedia.org/wiki/Bloom_filter) probabilistic data structure to keep track whether an element is part of a set.
+
+Building
+-------------
+As this is a Presto plugin it relies on presto-spi. This means you will have to build Presto first and this project expects to find Presto as a parent project. Basically set it up like this:
+
+/code/  
+/code/presto  
+/code/presto-bloomfilter  
+
+Then run `mvn clean install` in /code/presto. Once that has finished run `mvn clean install` in /code/presto-bloomfilter.

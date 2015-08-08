@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<testsuite name="TestSuite" time="3.527" tests="6" errors="0" skipped="0" failures="0">
+<testsuite name="TestSuite" time="3.592" tests="6" errors="0" skipped="0" failures="0">
   <properties>
     <property name="idea.version" value="14.1.3"/>
     <property name="java.runtime.name" value="Java(TM) SE Runtime Environment"/>
@@ -13,7 +13,7 @@
     <property name="guice.disable.misplaced.annotation.check" value="true"/>
     <property name="java.vm.name" value="Java HotSpot(TM) 64-Bit Server VM"/>
     <property name="file.encoding.pkg" value="sun.io"/>
-    <property name="idea.launcher.port" value="7534"/>
+    <property name="idea.launcher.port" value="7537"/>
     <property name="user.country" value="US"/>
     <property name="sun.java.launcher" value="SUN_STANDARD"/>
     <property name="sun.os.patch.level" value="unknown"/>
@@ -64,10 +64,10 @@
     <property name="ftp.nonProxyHosts" value="local|*.local|169.254/16|*.169.254/16"/>
     <property name="sun.cpu.isalist" value=""/>
   </properties>
-  <testcase name="testBloomFilterCreate" classname="com.facebook.presto.bloomfilter.TestBloomFilter" time="0.038"/>
-  <testcase name="testBloomFilterSizeEstimation" classname="com.facebook.presto.bloomfilter.TestBloomFilter" time="0.039"/>
-  <testcase name="testBloomFilterElementExists" classname="com.facebook.presto.bloomfilter.TestBloomFilter" time="0.009"/>
-  <testcase name="testBloomFilterCreate" classname="com.facebook.presto.bloomfilter.TestBloomFilterSerialization" time="0.511"/>
-  <testcase name="testBloomFiltersTypeConversions" classname="com.facebook.presto.bloomfilter.TestBloomFilterQueries" time="0.905"/>
-  <testcase name="testBloomFilters" classname="com.facebook.presto.bloomfilter.TestBloomFilterQueries" time="2.025"/>
+  <testcase name="testBloomFilterSizeEstimation" classname="com.facebook.presto.bloomfilter.TestBloomFilter" time="0.04"/>
+  <testcase name="testBloomFilterCreate" classname="com.facebook.presto.bloomfilter.TestBloomFilter" time="0.041"/>
+  <testcase name="testBloomFilterElementExists" classname="com.facebook.presto.bloomfilter.TestBloomFilter" time="0.007"/>
+  <testcase name="testBloomFilterCreate" classname="com.facebook.presto.bloomfilter.TestBloomFilterSerialization" time="0.618"/>
+  <testcase name="testBloomFiltersTypeConversions" classname="com.facebook.presto.bloomfilter.TestBloomFilterQueries" time="0.894"/>
+  <testcase name="testBloomFilters" classname="com.facebook.presto.bloomfilter.TestBloomFilterQueries" time="1.992"/>
 </testsuite>
