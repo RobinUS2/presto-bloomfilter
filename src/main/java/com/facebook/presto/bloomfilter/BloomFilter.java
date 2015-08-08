@@ -17,6 +17,7 @@ import com.google.common.hash.Funnel;
 import com.google.common.hash.HashCode;
 import com.google.common.hash.Hashing;
 import com.google.common.hash.PrimitiveSink;
+import io.airlift.log.Logger;
 import io.airlift.slice.BasicSliceInput;
 import io.airlift.slice.DynamicSliceOutput;
 import io.airlift.slice.Slice;
@@ -36,6 +37,8 @@ public class BloomFilter
     private double falsePositivePercentage;
     private static Funnel<Slice> funnel;
 
+    private static final Logger log = Logger.get(BloomFilter.class);
+
     static {
         BloomFilter.funnel = new Funnel<Slice>()
         {
@@ -51,6 +54,16 @@ public class BloomFilter
     public static final double DEFAULT_BLOOM_FILTER_FALSE_POSITIVE_PERCENTAGE = 0.01;
 
     public static final double BF_MEM_CONSTANT = Math.log(1.0 / (Math.pow(2.0, Math.log(2.0))));
+
+    public int getExpectedInsertions()
+    {
+        return expectedInsertions;
+    }
+
+    public double getFalsePositivePercentage()
+    {
+        return falsePositivePercentage;
+    }
 
     public static BloomFilter newInstance()
     {
@@ -109,6 +122,9 @@ public class BloomFilter
     {
         BasicSliceInput input = serialized.getInput();
 
+        // Debug
+        log.warn("Deser");
+
         // Read hash
         byte[] bfHash = new byte[32];
         input.readBytes(bfHash, 0, 32);
@@ -145,6 +161,9 @@ public class BloomFilter
 
     public Slice serialize()
     {
+        // Debug
+        log.warn("Ser");
+
         int size;
         byte[] bytes = new byte[0];
         try {
