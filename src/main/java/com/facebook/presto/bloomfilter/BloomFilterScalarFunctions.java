@@ -26,7 +26,7 @@ import javax.annotation.Nullable;
 
 public final class BloomFilterScalarFunctions
 {
-    private static final Cache<HashCode, BloomFilter> BF_CACHE = CacheBuilder.newBuilder().maximumSize(20).build();
+    private static final Cache<HashCode, BloomFilter> BF_CACHE = CacheBuilder.newBuilder().maximumSize(40).build();
 
     private BloomFilterScalarFunctions()
     {

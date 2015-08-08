@@ -18,6 +18,8 @@ import io.airlift.slice.Slice;
 import io.airlift.slice.Slices;
 import org.testng.annotations.Test;
 
+import java.util.Date;
+
 import static org.testng.Assert.assertFalse;
 import static org.testng.Assert.assertNotNull;
 import static org.testng.Assert.assertTrue;
@@ -39,6 +41,61 @@ public class TestBloomFilter
         bf.put(Slices.wrappedBuffer("robin".getBytes()));
         assertTrue(bf.mightContain(Slices.wrappedBuffer("robin".getBytes())));
         assertFalse(bf.mightContain(Slices.wrappedBuffer("verlangen".getBytes())));
+    }
+
+    @Test
+    public void testBloomFilterPerformancePut()
+    {
+        BloomFilter bf = BloomFilter.newInstance();
+        long start = new Date().getTime();
+        Slice x = Slices.wrappedBuffer("robin".getBytes());
+        for (int i = 0; i < 1000000; i++) {
+            bf.put(x);
+        }
+        long took = new Date().getTime() - start;
+        assertTrue(took < 1000L);
+    }
+
+    @Test
+    public void testBloomFilterPerformanceContains()
+    {
+        BloomFilter bf = BloomFilter.newInstance();
+        long start = new Date().getTime();
+        Slice x = Slices.wrappedBuffer("robin".getBytes());
+        for (int i = 0; i < 1000000; i++) {
+            bf.mightContain(x);
+        }
+        long took = new Date().getTime() - start;
+        assertTrue(took < 1000L);
+    }
+
+    @Test
+    public void testBloomFilterPerformanceSerialize()
+    {
+        BloomFilter bf = BloomFilter.newInstance();
+        long start = new Date().getTime();
+        bf.put(Slices.wrappedBuffer("robin".getBytes()));
+        for (int i = 0; i < 10; i++) {
+            // @todo Check optimize, seems to take about 100ms
+            bf.serialize();
+        }
+        long took = new Date().getTime() - start;
+        assertTrue(took < 2000L);
+    }
+
+    @Test
+    public void testBloomFilterPerformanceDeserialize()
+    {
+        BloomFilter bf = BloomFilter.newInstance();
+        long start = new Date().getTime();
+        bf.put(Slices.wrappedBuffer("robin".getBytes()));
+        Slice ser = bf.serialize();
+        for (int i = 0; i < 10; i++) {
+            // @todo Check optimize, seems to take about 100ms
+            BloomFilter.newInstance(ser);
+        }
+        long took = new Date().getTime() - start;
+        assertTrue(took < 2000L);
     }
 
     @Test
