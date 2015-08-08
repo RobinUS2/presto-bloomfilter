@@ -69,7 +69,6 @@ public class BloomFilter
 
     public static BloomFilter newInstance(Slice serialized)
     {
-        System.out.println("New instance from serialized");
         BloomFilter bf = newInstance();
         bf.load(serialized);
         return bf;
@@ -189,7 +188,8 @@ public class BloomFilter
         return (int) Math.round(m);
     }
 
-    public static HashCode readHash(Slice s) {
+    public static HashCode readHash(Slice s)
+    {
         return HashCode.fromBytes(s.getBytes(0, 32));
     }
 }
