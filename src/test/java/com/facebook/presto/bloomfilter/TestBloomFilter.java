@@ -13,6 +13,8 @@
  */
 package com.facebook.presto.bloomfilter;
 
+import com.google.common.hash.HashCode;
+import io.airlift.slice.Slice;
 import io.airlift.slice.Slices;
 import org.testng.annotations.Test;
 
@@ -53,6 +55,24 @@ public class TestBloomFilter
 
         // Check whether contents of the second BF can be found
         assertTrue(bf.mightContain(Slices.wrappedBuffer("verlangen".getBytes())));
+    }
+
+    @Test
+    public void testBloomFilterHash()
+    {
+        BloomFilter bf = BloomFilter.newInstance();
+        Slice s = bf.serialize();
+
+        // Consistent read test
+        HashCode a = BloomFilter.readHash(s);
+        HashCode b = BloomFilter.readHash(s);
+        assertEquals(a, b);
+
+        // Consistent hash test
+        BloomFilter bf2 = BloomFilter.newInstance();
+        Slice s2 = bf2.serialize();
+        HashCode c = BloomFilter.readHash(s2);
+        assertEquals(b, c);
     }
 
     @Test

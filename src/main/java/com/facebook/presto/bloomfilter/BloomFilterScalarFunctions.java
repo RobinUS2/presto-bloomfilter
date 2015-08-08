@@ -53,7 +53,7 @@ public final class BloomFilterScalarFunctions
     private static BloomFilter getOrLoadBloomFilter(Slice bloomFilterSlice)
     {
         // Read hash
-        HashCode hash = HashCode.fromBytes(bloomFilterSlice.getBytes(0, 32));
+        HashCode hash = BloomFilter.readHash(bloomFilterSlice);
 
         // From cache
         BloomFilter bf = BF_CACHE.getIfPresent(hash);

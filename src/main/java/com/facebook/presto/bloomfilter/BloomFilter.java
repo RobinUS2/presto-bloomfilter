@@ -14,6 +14,7 @@
 package com.facebook.presto.bloomfilter;
 
 import com.google.common.hash.Funnel;
+import com.google.common.hash.HashCode;
 import com.google.common.hash.Hashing;
 import com.google.common.hash.PrimitiveSink;
 import io.airlift.slice.BasicSliceInput;
@@ -68,6 +69,7 @@ public class BloomFilter
 
     public static BloomFilter newInstance(Slice serialized)
     {
+        System.out.println("New instance from serialized");
         BloomFilter bf = newInstance();
         bf.load(serialized);
         return bf;
@@ -185,5 +187,9 @@ public class BloomFilter
         // Source: http://hur.st/bloomfilter
         double m = Math.ceil(((double) expectedInsertions * Math.log(falsePositivePercentage)) / BF_MEM_CONSTANT) / 8.0D;
         return (int) Math.round(m);
+    }
+
+    public static HashCode readHash(Slice s) {
+        return HashCode.fromBytes(s.getBytes(0, 32));
     }
 }
