@@ -33,6 +33,18 @@ public class BloomFilter
     private com.google.common.hash.BloomFilter<Slice> instance;
     private int expectedInsertions;
     private double falsePositivePercentage;
+    private static Funnel<Slice> funnel;
+
+    static {
+        BloomFilter.funnel = new Funnel<Slice>()
+        {
+            @Override
+            public void funnel(Slice s, PrimitiveSink into)
+            {
+                into.putBytes(s.getBytes());
+            }
+        };
+    }
 
     public static final int DEFAULT_BLOOM_FILTER_EXPECTED_INSERTIONS = 10_000_000;
     public static final double DEFAULT_BLOOM_FILTER_FALSE_POSITIVE_PERCENTAGE = 0.01;
@@ -84,14 +96,7 @@ public class BloomFilter
 
     public Funnel<Slice> getFunnel()
     {
-        return new Funnel<Slice>()
-        {
-            @Override
-            public void funnel(Slice s, PrimitiveSink into)
-            {
-                into.putBytes(s.getBytes());
-            }
-        };
+        return funnel;
     }
 
     public boolean mightContain(Slice s)
