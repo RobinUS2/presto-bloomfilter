@@ -17,6 +17,8 @@ import io.airlift.slice.Slice;
 import io.airlift.slice.Slices;
 import org.testng.annotations.Test;
 
+import java.util.Date;
+
 import static org.testng.Assert.assertNotNull;
 import static org.testng.Assert.assertTrue;
 import static org.testng.Assert.assertFalse;
@@ -45,5 +47,34 @@ public class TestBloomFilterSerialization
         // Validate
         assertTrue(bf2.mightContain(Slices.wrappedBuffer("robin".getBytes())));
         assertFalse(bf2.mightContain(Slices.wrappedBuffer("not-in-here".getBytes())));
+    }
+
+    @Test
+    public void testBloomFilterPerformanceSerialize()
+    {
+        BloomFilter bf = BloomFilter.newInstance();
+        long start = new Date().getTime();
+        bf.put(Slices.wrappedBuffer("robin".getBytes()));
+        for (int i = 0; i < 10; i++) {
+            // @todo Check optimize, seems to take about 100ms
+            bf.serialize();
+        }
+        long took = new Date().getTime() - start;
+        assertTrue(took < 10000L);
+    }
+
+    @Test
+    public void testBloomFilterPerformanceDeserialize()
+    {
+        BloomFilter bf = BloomFilter.newInstance();
+        long start = new Date().getTime();
+        bf.put(Slices.wrappedBuffer("robin".getBytes()));
+        Slice ser = bf.serialize();
+        for (int i = 0; i < 10; i++) {
+            // @todo Check optimize, seems to take about 100ms
+            BloomFilter.newInstance(ser);
+        }
+        long took = new Date().getTime() - start;
+        assertTrue(took < 10000L);
     }
 }
