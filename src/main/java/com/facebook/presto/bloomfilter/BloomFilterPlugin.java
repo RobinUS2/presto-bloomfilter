@@ -17,6 +17,7 @@ import com.facebook.presto.metadata.FunctionFactory;
 import com.facebook.presto.spi.Plugin;
 import com.facebook.presto.spi.type.Type;
 import com.facebook.presto.spi.type.TypeManager;
+import com.facebook.presto.type.ParametricType;
 import com.google.common.collect.ImmutableList;
 
 import javax.inject.Inject;
@@ -45,6 +46,9 @@ public class BloomFilterPlugin
         else if (type == Type.class) {
             // Register bloom filter type
             return ImmutableList.of(type.cast(BloomFilterType.BLOOM_FILTER));
+        }
+        else if (type == ParametricType.class) {
+            return ImmutableList.of(type.cast(new BloomFilterParametricType()));
         }
         return ImmutableList.of();
     }
