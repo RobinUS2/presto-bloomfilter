@@ -78,7 +78,9 @@ public class BloomFilterAggregation
     @CombineFunction
     public static void combine(BloomFilterState state, BloomFilterState otherState)
     {
-        state.setBloomFilter(state.getBloomFilter().putAll(otherState.getBloomFilter()));
+        BloomFilter bfState = getOrCreateBloomFilter(state, BloomFilter.DEFAULT_BLOOM_FILTER_EXPECTED_INSERTIONS, BloomFilter.DEFAULT_BLOOM_FILTER_FALSE_POSITIVE_PERCENTAGE);
+        BloomFilter bfOther = getOrCreateBloomFilter(state, BloomFilter.DEFAULT_BLOOM_FILTER_EXPECTED_INSERTIONS, BloomFilter.DEFAULT_BLOOM_FILTER_FALSE_POSITIVE_PERCENTAGE);
+        state.setBloomFilter(bfState.putAll(bfOther));
     }
 
     @OutputFunction(BloomFilterType.TYPE)
