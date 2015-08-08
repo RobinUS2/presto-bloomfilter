@@ -1,7 +1,7 @@
 # presto-bloomfilter
 Bloomfilter support for Facebook Presto (prestodb.io) 
 
-Use cases
+Use cases & Examples
 -------------
 This project is very helpful if you want to "join" massive data sets very quickly. A typical query (before using bloom filters) would look something like this:
 
@@ -36,6 +36,20 @@ Let's go through this step by step:
 3.  Once this is complete there will basically be a single bloom filter instance which can help us tell whether a customer ID is part of the set, or not.
 4.  We then go in the regular select to get the order data. 
 5.  The where statement uses `bloom_filter_contains` to find out whether an element is probably in a set. False positives are possible.
+
+Functions
+-------------
+There are tho types of functions, aggregation and scalar. 
+
+### Aggregation
+`bloom_filter(<element>)` -> BloomFilter
+
+Will create a Bloom Filter with default settings. Expected insertions are 10 000 000 items with an accepted false positive percentage of 1% (0.01).
+
+### Scalar
+`bloom_filter_contains(<BloomFilter>, <element>)` -> boolean
+
+Returns ``TRUE`` if the item is probably in the set and returns ``FALSE`` if it is definitely not in there.
 
 Bloom Filters
 -------------
