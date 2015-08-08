@@ -70,7 +70,7 @@ public class BloomFilter
 
     public void put(Slice s)
     {
-        if (s.length() < 1) {
+        if (s == null || s.length() < 1) {
             return;
         }
         instance.put(s);

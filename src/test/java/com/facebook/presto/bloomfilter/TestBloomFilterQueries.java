@@ -38,6 +38,12 @@ public class TestBloomFilterQueries
     public void testBloomFilters()
             throws Exception
     {
+        // Test empty string
+        assertQuery("WITH a AS (SELECT bloom_filter('') AS bf) SELECT bloom_filter_contains(a.bf, 'test') FROM a", "SELECT false");
+
+        // Test null
+        assertQuery("WITH a AS (SELECT bloom_filter(null) AS bf) SELECT bloom_filter_contains(a.bf, 'test') FROM a", "SELECT false");
+
         // Test positive in bloom filter
         assertQueryTrue("WITH a AS (SELECT bloom_filter('test') AS bf) SELECT bloom_filter_contains(a.bf, 'test') FROM a LIMIT 1");
 

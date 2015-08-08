@@ -24,7 +24,7 @@ import io.airlift.slice.Slice;
 
 import static com.facebook.presto.spi.type.StandardTypes.VARCHAR;
 
-@AggregationFunction(value = "bloom_filter", decomposable = false)
+@AggregationFunction(value = "bloom_filter")
 public class BloomFilterAggregation
 {
     private BloomFilterAggregation()
@@ -84,6 +84,7 @@ public class BloomFilterAggregation
     @OutputFunction(BloomFilterType.TYPE)
     public static void output(BloomFilterState state, BlockBuilder out)
     {
-        BloomFilterType.BLOOM_FILTER.writeSlice(out, state.getBloomFilter().serialize());
+        BloomFilter bf = getOrCreateBloomFilter(state, BloomFilter.DEFAULT_BLOOM_FILTER_EXPECTED_INSERTIONS, BloomFilter.DEFAULT_BLOOM_FILTER_FALSE_POSITIVE_PERCENTAGE);
+        BloomFilterType.BLOOM_FILTER.writeSlice(out, bf.serialize());
     }
 }
