@@ -53,7 +53,7 @@ public class TestBloomFilter
             bf.put(x);
         }
         long took = new Date().getTime() - start;
-        assertTrue(took < 1000L);
+        assertTrue(took < 5000L);
     }
 
     @Test
@@ -66,7 +66,7 @@ public class TestBloomFilter
             bf.mightContain(x);
         }
         long took = new Date().getTime() - start;
-        assertTrue(took < 1000L);
+        assertTrue(took < 5000L);
     }
 
     @Test
@@ -80,7 +80,7 @@ public class TestBloomFilter
             bf.serialize();
         }
         long took = new Date().getTime() - start;
-        assertTrue(took < 2000L);
+        assertTrue(took < 5000L);
     }
 
     @Test
@@ -95,7 +95,7 @@ public class TestBloomFilter
             BloomFilter.newInstance(ser);
         }
         long took = new Date().getTime() - start;
-        assertTrue(took < 2000L);
+        assertTrue(took < 5000L);
     }
 
     @Test
