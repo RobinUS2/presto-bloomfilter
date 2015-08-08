@@ -6,7 +6,11 @@ Use cases
 This project is very helpful if you want to "join" massive data sets very quickly. A typical query (before using bloom filters) would look something like this:
 
 ```
-   SELECT orders.country, count(distinct orders.id) AS purchases FROM customers JOIN orders ON (customers.id=orders.customer_id) WHERE customers.vip='1' GROUP BY 1 ORDER BY 2 DESC
+   SELECT orders.country, count(distinct orders.id) AS purchases 
+   FROM customers 
+   JOIN orders ON (customers.id=orders.customer_id) 
+   WHERE customers.vip='1'
+   GROUP BY 1 ORDER BY 2 DESC
 ```
 
 In order to execute this query it will have to combine all records in the customers table with all the records in the orders table. This means sending a lot of data back and forth.
@@ -15,8 +19,14 @@ Now see how we can speed this up:
 
 ```
    WITH vips AS (
-    SELECT bloom_filter(customer_id) AS bf FROM customers WHERE vip='1'
-   ) SELECT orders.country, count(distinct orders.id) AS purchases FROM orders, vips WHERE bloom_filter_contains(vips.bf, orders.customer_id)
+    SELECT bloom_filter(customer_id) AS bf 
+    FROM customers 
+    WHERE vip='1'
+   ) 
+   SELECT orders.country, count(distinct orders.id) AS purchases 
+   FROM orders, vips 
+   WHERE bloom_filter_contains(vips.bf, orders.customer_id)
+   GROUP BY 1 ORDER BY 2 DESC
 ```
 
 Let's go through this step by step:
