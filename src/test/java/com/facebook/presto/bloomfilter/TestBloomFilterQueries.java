@@ -77,7 +77,7 @@ public class TestBloomFilterQueries
             throws Exception
     {
         // Test positive in bloom filter
-        assertQuery("SELECT to_string(bloom_filter('', 10))", "SELECT 'GdRbn3//7EADTtfxo1CAymz2tMsYzqEc5D+Kuf5khztpAAAACgAAAHsUrkfheoQ/H4sIAAAAAAAAAE3LuxGAIBBFUVZzqyDeIgxswAqAWT4j+BygMa3QT2R2gnuJFI1KkXIo7I0TC2x8VGkdbDNQfMpdKs+vl8/6pInoHQIQsvDDgp2jafHfrb2aLiFJ0xcNN0Tysc5qAAAA'");
+        assertQuery("SELECT to_string(bloom_filter('', 10))", "SELECT 'OATkV8tpFEB8wtWC2TvvAuIpP84vCYb03RJqr/C+19lnAAAACgAAAHsUrkfheoQ/H4sIAAAAAAAAAGNkZGBkZmBgZEjOz9VLz89Pz0nVAzJz8/P0MhKLM/TcSvPyUnOKVZwqS1Idi4oSK8ECbxgZ+RgZcWhxysnPz3XLzClJLQouKUosSU3PTC1W2cTIBABhIduzbAAAAA=='");
     }
 
     private static LocalQueryRunner createLocalQueryRunner()
