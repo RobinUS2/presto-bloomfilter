@@ -78,8 +78,18 @@ public class BloomFilterAggregation
     @CombineFunction
     public static void combine(BloomFilterState state, BloomFilterState otherState)
     {
-        BloomFilter bfState = getOrCreateBloomFilter(state, BloomFilter.DEFAULT_BLOOM_FILTER_EXPECTED_INSERTIONS, BloomFilter.DEFAULT_BLOOM_FILTER_FALSE_POSITIVE_PERCENTAGE);
-        BloomFilter bfOther = getOrCreateBloomFilter(otherState, bfState != null ? bfState.getExpectedInsertions() : BloomFilter.DEFAULT_BLOOM_FILTER_EXPECTED_INSERTIONS, bfState != null ? bfState.getFalsePositivePercentage() : BloomFilter.DEFAULT_BLOOM_FILTER_FALSE_POSITIVE_PERCENTAGE);
+        int ei = BloomFilter.DEFAULT_BLOOM_FILTER_EXPECTED_INSERTIONS;
+        double fpp = BloomFilter.DEFAULT_BLOOM_FILTER_FALSE_POSITIVE_PERCENTAGE;
+        if (state.getBloomFilter() == null && otherState.getBloomFilter() != null) {
+            ei = otherState.getBloomFilter().getExpectedInsertions();
+            fpp  = otherState.getBloomFilter().getFalsePositivePercentage();
+        }
+        else if (otherState.getBloomFilter() == null && state.getBloomFilter() != null) {
+            ei = state.getBloomFilter().getExpectedInsertions();
+            fpp  = state.getBloomFilter().getFalsePositivePercentage();
+        }
+        BloomFilter bfState = getOrCreateBloomFilter(state, ei, fpp);
+        BloomFilter bfOther = getOrCreateBloomFilter(otherState, ei, fpp);
         state.setBloomFilter(bfState.putAll(bfOther));
     }
 
