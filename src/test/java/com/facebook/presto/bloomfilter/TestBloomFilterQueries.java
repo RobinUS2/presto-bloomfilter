@@ -53,6 +53,12 @@ public class TestBloomFilterQueries
         // Test with config (expected insertions)
         assertQueryTrue("WITH a AS (SELECT bloom_filter('test', 10) AS bf) SELECT bloom_filter_contains(a.bf, 'test') FROM a LIMIT 1");
 
+        // Test with config (expected insertions)
+        assertQuery("SELECT get_expected_insertions(bloom_filter('test', 10))", "SELECT 10");
+
+        // Test with config (expected insertions)
+        assertQuery("SELECT get_false_positive_percentage(bloom_filter('test', 10, 0.1234))", "SELECT 0.1234");
+
         // Test with config (expected insertions AND false positive percentage)
         assertQueryTrue("WITH a AS (SELECT bloom_filter('test', 10, 0.001) AS bf) SELECT bloom_filter_contains(a.bf, 'test') FROM a LIMIT 1");
 
@@ -68,7 +74,7 @@ public class TestBloomFilterQueries
             throws Exception
     {
         // Test positive in bloom filter
-        assertQuery("SELECT to_string(bloom_filter('', 10))", "SELECT 'p9uesW3uj5I6NZ4K/ewi7VuBHfI89lDUiMNb6lkNZ5sYAAAAFlQBBwAAAAIAAAAAAAAAAAAAAAAAAAAA'");
+        assertQuery("SELECT to_string(bloom_filter('', 10))", "SELECT 'p9uesW3uj5I6NZ4K/ewi7VuBHfI89lDUiMNb6lkNZ5sYAAAACgAAAHsUrkfheoQ/FlQBBwAAAAIAAAAAAAAAAAAAAAAAAAAA'");
     }
 
     private static LocalQueryRunner createLocalQueryRunner()

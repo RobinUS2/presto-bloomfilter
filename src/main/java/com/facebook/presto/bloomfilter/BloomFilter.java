@@ -30,6 +30,8 @@ import java.io.IOException;
 // Layout is <hash>:<size>:<bf>, where
 //   hash: is a sha256 hash of the bloom filter
 //   size: is an int describing the length of the bf bytes
+//   expectedInsertions: is an int describing the amount of expected elements
+//   falsePositivePercentage: is a double describing the desired false positive percentage
 //   bf: is the serialized bloom filter
 public class BloomFilter
 {
@@ -123,15 +125,16 @@ public class BloomFilter
     {
         BasicSliceInput input = serialized.getInput();
 
-        // Debug
-        log.warn("Deser");
-
         // Read hash
         byte[] bfHash = new byte[32];
         input.readBytes(bfHash, 0, 32);
 
         // Get the size of the bloom filter
         int bfSize = input.readInt();
+
+        // Params
+        expectedInsertions = input.readInt();
+        falsePositivePercentage = input.readDouble();
 
         // Read the buffer
         ByteArrayOutputStream out = new ByteArrayOutputStream();
@@ -172,9 +175,6 @@ public class BloomFilter
 
     public Slice serialize()
     {
-        // Debug
-        log.warn("Ser");
-
         int size;
         byte[] bytes = new byte[0];
         try {
@@ -209,6 +209,10 @@ public class BloomFilter
 
         // Write the length of the bloom filter
         output.appendInt(size);
+
+        // Params
+        output.appendInt(expectedInsertions);
+        output.appendDouble(falsePositivePercentage);
 
         // Write the bloom filter
         output.appendBytes(compressed);

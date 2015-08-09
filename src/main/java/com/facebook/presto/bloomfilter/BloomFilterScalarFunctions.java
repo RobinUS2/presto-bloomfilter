@@ -53,16 +53,34 @@ public final class BloomFilterScalarFunctions
         return Slices.wrappedBuffer(java.util.Base64.getEncoder().encode(bf.serialize().getBytes()));
     }
 
+    @Nullable
+    @ScalarFunction("get_expected_insertions")
+    @SqlType(StandardTypes.BIGINT)
+    public static Long bloomFilterExpectedInsertions(@SqlType(BloomFilterType.TYPE) Slice bloomFilterSlice)
+    {
+        BloomFilter bf = getOrLoadBloomFilter(bloomFilterSlice);
+        return (long) bf.getExpectedInsertions();
+    }
+
+    @Nullable
+    @ScalarFunction("get_false_positive_percentage")
+    @SqlType(StandardTypes.DOUBLE)
+    public static Double bloomFilterFalsePositivePercentage(@SqlType(BloomFilterType.TYPE) Slice bloomFilterSlice)
+    {
+        BloomFilter bf = getOrLoadBloomFilter(bloomFilterSlice);
+        return bf.getFalsePositivePercentage();
+    }
+
     private static BloomFilter getOrLoadBloomFilter(Slice bloomFilterSlice)
     {
         // Read hash
         HashCode hash = BloomFilter.readHash(bloomFilterSlice);
-        log.warn("Hash " + hash.toString());
+//        log.warn("Hash " + hash.toString());
 
         // From cache
         BloomFilter bf = BloomFilterScalarFunctions.BF_CACHE.getIfPresent(hash);
         if (bf == null) {
-            log.warn("Cache miss");
+//            log.warn("Cache miss");
             bf = BloomFilter.newInstance(bloomFilterSlice);
             BloomFilterScalarFunctions.BF_CACHE.put(hash, bf);
         }
