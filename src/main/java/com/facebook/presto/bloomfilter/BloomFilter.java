@@ -13,6 +13,9 @@
  */
 package com.facebook.presto.bloomfilter;
 
+import com.esotericsoftware.kryo.Kryo;
+import com.esotericsoftware.kryo.io.Input;
+import com.esotericsoftware.kryo.io.Output;
 import com.google.common.hash.Funnel;
 import com.google.common.hash.HashCode;
 import com.google.common.hash.Hashing;
@@ -22,6 +25,7 @@ import io.airlift.slice.BasicSliceInput;
 import io.airlift.slice.DynamicSliceOutput;
 import io.airlift.slice.Slice;
 import org.apache.commons.io.IOUtils;
+import org.objenesis.strategy.StdInstantiatorStrategy;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
@@ -41,6 +45,8 @@ public class BloomFilter
     private int expectedInsertions;
     private double falsePositivePercentage;
     private static Funnel<Slice> funnel;
+    private static Kryo kryo;
+    private static final boolean KRYO_ENABLED = true;
 
     private static final Logger log = Logger.get(BloomFilter.class);
 
@@ -53,6 +59,13 @@ public class BloomFilter
                 into.putBytes(s.getBytes());
             }
         };
+
+        if (KRYO_ENABLED) {
+            BloomFilter.kryo = new Kryo();
+            kryo.setInstantiatorStrategy(new StdInstantiatorStrategy());
+            kryo.register(com.google.common.hash.BloomFilter.class);
+            kryo.register(Slice.class);
+        }
     }
 
     public static final int DEFAULT_BLOOM_FILTER_EXPECTED_INSERTIONS = 10_000_000;
@@ -144,7 +157,7 @@ public class BloomFilter
             input.readBytes(out, bfSize);
         }
         catch (IOException ix) {
-            // @todo Log
+            log.error(ix);
         }
 
         // Uncompress
@@ -153,7 +166,7 @@ public class BloomFilter
             uncompressed = decompress(out.toByteArray());
         }
         catch (IOException ix) {
-            // @todo Log
+            log.error(ix);
             uncompressed = new byte[0];
         }
 
@@ -162,10 +175,17 @@ public class BloomFilter
 
         // Setup bloom filter
         try {
-            instance = com.google.common.hash.BloomFilter.readFrom(in, getFunnel());
+            if (KRYO_ENABLED) {
+                Input i = new Input(in);
+                instance = getKryo().readObject(i, com.google.common.hash.BloomFilter.class);
+                input.close();
+            }
+            else {
+                instance = com.google.common.hash.BloomFilter.readFrom(in, getFunnel());
+            }
         }
-        catch (IOException ix) {
-            // @todo Log
+        catch (Exception ix) {
+            log.error(ix);
             instance = newBloomFilter();
         }
     }
@@ -175,18 +195,35 @@ public class BloomFilter
         return com.google.common.hash.BloomFilter.create(getFunnel(), expectedInsertions, falsePositivePercentage);
     }
 
+    public Kryo getKryo()
+    {
+        return kryo;
+    }
+
     public Slice serialize()
     {
         int size;
         byte[] bytes = new byte[0];
         try {
-            // Write bloom filter to bytes
-            ByteArrayOutputStream buffer = new ByteArrayOutputStream();
-            instance.writeTo(buffer);
-            bytes = buffer.toByteArray();
+            if (KRYO_ENABLED) {
+                // Kryo
+                ByteArrayOutputStream buffer2 = new ByteArrayOutputStream();
+                Output o = new  Output(buffer2);
+                getKryo().writeObject(o, instance);
+                o.flush();
+                bytes = buffer2.toByteArray();
+                o.close();
+                buffer2.close();
+            }
+            else {
+                // Write bloom filter to bytes by using the bloom filter method
+                ByteArrayOutputStream buffer = new ByteArrayOutputStream();
+                instance.writeTo(buffer);
+                bytes = buffer.toByteArray();
+            }
         }
-        catch (IOException ix) {
-            // @todo Log
+        catch (Exception ix) {
+            log.error(ix);
         }
 
         // Create hash
@@ -198,7 +235,7 @@ public class BloomFilter
             compressed = compress(bytes);
         }
         catch (IOException ix) {
-            // @todo Log
+            log.error(ix);
             compressed = new byte[0];
         }
         size = compressed.length;
