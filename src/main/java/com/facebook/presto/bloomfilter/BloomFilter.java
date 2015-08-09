@@ -17,9 +17,9 @@ import com.esotericsoftware.kryo.Kryo;
 import com.esotericsoftware.kryo.io.Input;
 import com.esotericsoftware.kryo.io.Output;
 import com.google.common.hash.Funnel;
+import com.google.common.hash.Funnels;
 import com.google.common.hash.HashCode;
 import com.google.common.hash.Hashing;
-import com.google.common.hash.PrimitiveSink;
 import io.airlift.log.Logger;
 import io.airlift.slice.BasicSliceInput;
 import io.airlift.slice.DynamicSliceOutput;
@@ -41,24 +41,17 @@ import java.util.zip.GZIPOutputStream;
 //   bf: is the serialized bloom filter
 public class BloomFilter
 {
-    private com.google.common.hash.BloomFilter<Slice> instance;
+    private com.google.common.hash.BloomFilter<byte[]> instance;
     private int expectedInsertions;
     private double falsePositivePercentage;
-    private static Funnel<Slice> funnel;
+    private static Funnel<byte[]> funnel;
     private Kryo kryo;
     private static final boolean KRYO_ENABLED = true;
 
     private static final Logger log = Logger.get(BloomFilter.class);
 
     static {
-        BloomFilter.funnel = new Funnel<Slice>()
-        {
-            @Override
-            public void funnel(Slice s, PrimitiveSink into)
-            {
-                into.putBytes(s.getBytes());
-            }
-        };
+        BloomFilter.funnel = Funnels.byteArrayFunnel();
     }
 
     public static final int DEFAULT_BLOOM_FILTER_EXPECTED_INSERTIONS = 10_000_000;
@@ -117,7 +110,7 @@ public class BloomFilter
         if (s == null || s.length() < 1) {
             return;
         }
-        instance.put(s);
+        instance.put(s.getBytes());
     }
 
     public BloomFilter putAll(BloomFilter other)
@@ -126,14 +119,14 @@ public class BloomFilter
         return this;
     }
 
-    public Funnel<Slice> getFunnel()
+    public Funnel<byte[]> getFunnel()
     {
         return funnel;
     }
 
     public boolean mightContain(Slice s)
     {
-        return instance.mightContain(s);
+        return instance.mightContain(s.getBytes());
     }
 
     private void load(Slice serialized)
@@ -190,7 +183,7 @@ public class BloomFilter
         }
     }
 
-    private com.google.common.hash.BloomFilter<Slice> newBloomFilter()
+    private com.google.common.hash.BloomFilter<byte[]> newBloomFilter()
     {
         return com.google.common.hash.BloomFilter.create(getFunnel(), expectedInsertions, falsePositivePercentage);
     }
