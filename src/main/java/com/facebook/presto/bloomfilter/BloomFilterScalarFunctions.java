@@ -19,6 +19,7 @@ import com.facebook.presto.type.SqlType;
 import com.google.common.cache.Cache;
 import com.google.common.cache.CacheBuilder;
 import com.google.common.hash.HashCode;
+import io.airlift.log.Logger;
 import io.airlift.slice.Slice;
 import io.airlift.slice.Slices;
 
@@ -27,9 +28,11 @@ import javax.annotation.Nullable;
 public final class BloomFilterScalarFunctions
 {
     private static final Cache<HashCode, BloomFilter> BF_CACHE = CacheBuilder.newBuilder().maximumSize(40).build();
+    private static final Logger log = Logger.get(BloomFilterScalarFunctions.class);
 
     private BloomFilterScalarFunctions()
     {
+        log.warn("New scalar");
     }
 
     @Nullable
@@ -54,12 +57,14 @@ public final class BloomFilterScalarFunctions
     {
         // Read hash
         HashCode hash = BloomFilter.readHash(bloomFilterSlice);
+        log.warn("Hash " + hash.toString());
 
         // From cache
-        BloomFilter bf = BF_CACHE.getIfPresent(hash);
+        BloomFilter bf = BloomFilterScalarFunctions.BF_CACHE.getIfPresent(hash);
         if (bf == null) {
+            log.warn("Cache miss");
             bf = BloomFilter.newInstance(bloomFilterSlice);
-            BF_CACHE.put(hash, bf);
+            BloomFilterScalarFunctions.BF_CACHE.put(hash, bf);
         }
         return bf;
     }
