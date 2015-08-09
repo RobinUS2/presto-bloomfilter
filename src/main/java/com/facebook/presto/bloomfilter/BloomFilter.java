@@ -21,11 +21,13 @@ import io.airlift.log.Logger;
 import io.airlift.slice.BasicSliceInput;
 import io.airlift.slice.DynamicSliceOutput;
 import io.airlift.slice.Slice;
-import org.xerial.snappy.Snappy;
+import org.apache.commons.io.IOUtils;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.util.zip.GZIPInputStream;
+import java.util.zip.GZIPOutputStream;
 
 // Layout is <hash>:<size>:<bf>, where
 //   hash: is a sha256 hash of the bloom filter
@@ -148,7 +150,7 @@ public class BloomFilter
         // Uncompress
         byte[] uncompressed;
         try {
-            uncompressed = Snappy.uncompress(out.toByteArray());
+            uncompressed = decompress(out.toByteArray());
         }
         catch (IOException ix) {
             // @todo Log
@@ -193,7 +195,7 @@ public class BloomFilter
         // Compress
         byte[] compressed;
         try {
-            compressed = Snappy.compress(bytes);
+            compressed = compress(bytes);
         }
         catch (IOException ix) {
             // @todo Log
@@ -218,6 +220,22 @@ public class BloomFilter
         output.appendBytes(compressed);
 
         return output.slice();
+    }
+
+    public static byte[] compress(byte[] b) throws IOException
+    {
+        ByteArrayOutputStream out = new ByteArrayOutputStream();
+        GZIPOutputStream gzip = new GZIPOutputStream(out);
+        gzip.write(b);
+        gzip.close();
+        return out.toByteArray();
+    }
+
+    public static byte[] decompress(byte[] b) throws IOException
+    {
+        ByteArrayOutputStream out = new ByteArrayOutputStream();
+        IOUtils.copy(new GZIPInputStream(new ByteArrayInputStream(b)), out);
+        return out.toByteArray();
     }
 
     public int estimatedInMemorySize()

@@ -67,6 +67,9 @@ public class TestBloomFilterQueries
 
         // Test streaming load
         assertQuery("WITH input AS (select 'a' AS uuid union select 'b' AS uuid union select 'c' AS uuid union select 'd' AS uuid), a AS (SELECT bloom_filter(input.uuid) AS bf FROM input) SELECT bloom_filter_contains(a.bf, 'a'), bloom_filter_contains(a.bf, 'not-in-the-list') FROM a LIMIT 1", "SELECT true, false");
+
+        // Test streaming load custom config
+        assertQuery("WITH input AS (select 'a' AS uuid union select 'b' AS uuid union select 'c' AS uuid union select 'd' AS uuid), a AS (SELECT bloom_filter(input.uuid, 10) AS bf FROM input) SELECT bloom_filter_contains(a.bf, 'a'), bloom_filter_contains(a.bf, 'not-in-the-list') FROM a LIMIT 1", "SELECT true, false");
     }
 
     @Test
@@ -74,7 +77,7 @@ public class TestBloomFilterQueries
             throws Exception
     {
         // Test positive in bloom filter
-        assertQuery("SELECT to_string(bloom_filter('', 10))", "SELECT 'p9uesW3uj5I6NZ4K/ewi7VuBHfI89lDUiMNb6lkNZ5sYAAAACgAAAHsUrkfheoQ/FlQBBwAAAAIAAAAAAAAAAAAAAAAAAAAA'");
+        assertQuery("SELECT to_string(bloom_filter('', 10))", "SELECT 'p9uesW3uj5I6NZ4K/ewi7VuBHfI89lDUiMNb6lkNZ5scAAAACgAAAHsUrkfheoQ/H4sIAAAAAAAAAGNkZ2BgYGJAAwC/w9oCFgAAAA=='");
     }
 
     private static LocalQueryRunner createLocalQueryRunner()
