@@ -45,7 +45,7 @@ public class BloomFilter
     private int expectedInsertions;
     private double falsePositivePercentage;
     private static Funnel<Slice> funnel;
-    private static Kryo kryo;
+    private Kryo kryo;
     private static final boolean KRYO_ENABLED = true;
 
     private static final Logger log = Logger.get(BloomFilter.class);
@@ -59,13 +59,6 @@ public class BloomFilter
                 into.putBytes(s.getBytes());
             }
         };
-
-        if (KRYO_ENABLED) {
-            BloomFilter.kryo = new Kryo();
-            kryo.setInstantiatorStrategy(new StdInstantiatorStrategy());
-            kryo.register(com.google.common.hash.BloomFilter.class);
-            kryo.register(Slice.class);
-        }
     }
 
     public static final int DEFAULT_BLOOM_FILTER_EXPECTED_INSERTIONS = 10_000_000;
@@ -110,6 +103,13 @@ public class BloomFilter
         this.expectedInsertions = expectedInsertions;
         this.falsePositivePercentage = falsePositivePercentage;
         instance = newBloomFilter();
+
+        if (KRYO_ENABLED) {
+            kryo = new Kryo();
+            kryo.setInstantiatorStrategy(new StdInstantiatorStrategy());
+            kryo.register(com.google.common.hash.BloomFilter.class);
+            kryo.register(Slice.class);
+        }
     }
 
     public void put(Slice s)
