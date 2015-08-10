@@ -75,12 +75,12 @@ public final class BloomFilterScalarFunctions
     {
         // Read hash
         HashCode hash = BloomFilter.readHash(bloomFilterSlice);
-//        log.warn("Hash " + hash.toString());
 
         // From cache
         BloomFilter bf = BloomFilterScalarFunctions.BF_CACHE.getIfPresent(hash);
         if (bf == null) {
-//            log.warn("Cache miss");
+            log.warn("Cache miss");
+            log.warn("Hash " + hash.toString());
             bf = BloomFilter.newInstance(bloomFilterSlice);
             BloomFilterScalarFunctions.BF_CACHE.put(hash, bf);
         }
