@@ -246,7 +246,7 @@ public class BloomFilter
     private orestes.bloomfilter.BloomFilter newPreBloomFilter()
     {
         return
-                new FilterBuilder(Math.max(expectedInsertions / 10, 10), Math.max(falsePositivePercentage * 10, 0.0001))
+                new FilterBuilder(Math.max(expectedInsertions / 10, 10), Math.min(falsePositivePercentage * 10, 0.5))
                         .hashFunction(HashProvider.HashMethod.FNVWithLCG)
                         .hashes(1)
                         .buildBloomFilter();
