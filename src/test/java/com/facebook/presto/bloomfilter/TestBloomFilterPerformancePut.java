@@ -31,7 +31,7 @@ public class TestBloomFilterPerformancePut
         long start = new Date().getTime();
         Random rand = new Random();
         byte[] buf = new byte[32];
-        for (int i = 0; i < 1000000; i++) {
+        for (int i = 0; i < 100000; i++) {
             rand.nextBytes(buf);
             Slice x = Slices.wrappedBuffer(buf);
             bf.put(x);

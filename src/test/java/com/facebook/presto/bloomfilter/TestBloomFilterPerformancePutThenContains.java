@@ -37,7 +37,7 @@ public class TestBloomFilterPerformancePutThenContains
         Random rand = new Random();
 
         // Load data
-        int iterations = 250000;
+        int iterations = 100000;
         ArrayList<UUID> list = new ArrayList<>();
         for (int i = 0; i < iterations; i++) {
             UUID u = UUID.randomUUID();
