@@ -57,7 +57,7 @@ public class TestBloomFilter
             bf.put(x);
         }
         long took = new Date().getTime() - start;
-        assertTrue(took < 5000L);
+        assertTrue(took < 10000L);
     }
 
     @Test
@@ -73,7 +73,7 @@ public class TestBloomFilter
             bf.mightContain(x);
         }
         long took = new Date().getTime() - start;
-        assertTrue(took < 5000L);
+        assertTrue(took < 10000L);
     }
 
     @Test
@@ -102,7 +102,7 @@ public class TestBloomFilter
         }
 
         long took = new Date().getTime() - start;
-        assertTrue(took < 5000L);
+        assertTrue(took < 10000L);
         assertTrue(matches >= 1);
     }
 
@@ -162,6 +162,7 @@ public class TestBloomFilter
         BloomFilter bf = BloomFilter.newInstance();
         long start = new Date().getTime();
         Slice x = Slices.wrappedBuffer("robin".getBytes());
+        bf.put(x);
         Slice bfSer = bf.serialize();
         for (int i = 0; i < 1000000; i++) {
             HashCode h = BloomFilter.readHash(bfSer);
