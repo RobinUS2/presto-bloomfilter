@@ -126,7 +126,8 @@ public class BloomFilter
 
     public boolean mightContain(Slice s)
     {
-        return instance.mightContain(s.getBytes());
+        return false;
+//        return instance.mightContain(s.getBytes());
     }
 
     private void load(Slice serialized)

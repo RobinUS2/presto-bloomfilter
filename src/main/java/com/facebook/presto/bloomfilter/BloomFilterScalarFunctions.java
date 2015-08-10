@@ -79,8 +79,6 @@ public final class BloomFilterScalarFunctions
         // From cache
         BloomFilter bf = BloomFilterScalarFunctions.BF_CACHE.getIfPresent(hash);
         if (bf == null) {
-            log.warn("Cache miss");
-            log.warn("Hash " + hash.toString());
             bf = BloomFilter.newInstance(bloomFilterSlice);
             BloomFilterScalarFunctions.BF_CACHE.put(hash, bf);
         }
