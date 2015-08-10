@@ -19,6 +19,7 @@ import io.airlift.slice.Slices;
 import org.testng.annotations.Test;
 
 import java.util.Date;
+import java.util.Random;
 
 import static org.testng.Assert.assertFalse;
 import static org.testng.Assert.assertNotNull;
@@ -48,8 +49,11 @@ public class TestBloomFilter
     {
         BloomFilter bf = BloomFilter.newInstance();
         long start = new Date().getTime();
-        Slice x = Slices.wrappedBuffer("robin".getBytes());
+        Random rand = new Random();
+        byte[] buf = new byte[32];
         for (int i = 0; i < 1000000; i++) {
+            rand.nextBytes(buf);
+            Slice x = Slices.wrappedBuffer(buf);
             bf.put(x);
         }
         long took = new Date().getTime() - start;
@@ -61,12 +65,45 @@ public class TestBloomFilter
     {
         BloomFilter bf = BloomFilter.newInstance();
         long start = new Date().getTime();
-        Slice x = Slices.wrappedBuffer("robin".getBytes());
+        Random rand = new Random();
+        byte[] buf = new byte[32];
         for (int i = 0; i < 1000000; i++) {
+            rand.nextBytes(buf);
+            Slice x = Slices.wrappedBuffer(buf);
             bf.mightContain(x);
         }
         long took = new Date().getTime() - start;
         assertTrue(took < 5000L);
+    }
+
+    @Test
+    public void testBloomFilterPerformancePutAndMightContains()
+    {
+        BloomFilter bf = BloomFilter.newInstance();
+        long start = new Date().getTime();
+        Random rand = new Random();
+
+        // Load data
+        byte[] buf = new byte[4]; // not much of data as we want to find matches
+        for (int i = 0; i < 1000000; i++) {
+            rand.nextBytes(buf);
+            Slice x = Slices.wrappedBuffer(buf);
+            bf.put(x);
+        }
+
+        // Read data
+        int matches = 0;
+        for (int i = 0; i < 1000000; i++) {
+            rand.nextBytes(buf);
+            Slice x = Slices.wrappedBuffer(buf);
+            if (bf.mightContain(x)) {
+                matches++;
+            }
+        }
+
+        long took = new Date().getTime() - start;
+        assertTrue(took < 5000L);
+        assertTrue(matches >= 1);
     }
 
     @Test
@@ -117,5 +154,20 @@ public class TestBloomFilter
         // Smaller with lower false positive percentage
         BloomFilter bf3 = BloomFilter.newInstance(100, 0.001);
         assertEquals(bf3.estimatedInMemorySize(), 180);
+    }
+
+    @Test
+    public void testBloomFilterHashCodePerformance()
+    {
+        BloomFilter bf = BloomFilter.newInstance();
+        long start = new Date().getTime();
+        Slice x = Slices.wrappedBuffer("robin".getBytes());
+        Slice bfSer = bf.serialize();
+        for (int i = 0; i < 1000000; i++) {
+            HashCode h = BloomFilter.readHash(bfSer);
+            assertNotNull(h);
+        }
+        long took = new Date().getTime() - start;
+        assertTrue(took < 1000L);
     }
 }
