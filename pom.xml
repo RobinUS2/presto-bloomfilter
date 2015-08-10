@@ -94,6 +94,12 @@
             <scope>compile</scope>
         </dependency>
 
+        <dependency>
+            <groupId>com.baqend</groupId>
+            <artifactId>bloom-filter</artifactId>
+            <version>1.0.6</version>
+        </dependency>
+
         <!-- for testing -->
         <dependency>
             <groupId>org.testng</groupId>
@@ -120,5 +126,16 @@
             <scope>test</scope>
         </dependency>
     </dependencies>
+
+    <repositories>
+        <repository>
+            <snapshots>
+                <enabled>false</enabled>
+            </snapshots>
+            <id>central</id>
+            <name>bintray</name>
+            <url>http://jcenter.bintray.com</url>
+        </repository>
+    </repositories>
 
 </project>

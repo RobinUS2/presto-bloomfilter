@@ -16,14 +16,14 @@ package com.facebook.presto.bloomfilter;
 import com.esotericsoftware.kryo.Kryo;
 import com.esotericsoftware.kryo.io.Input;
 import com.esotericsoftware.kryo.io.Output;
-import com.google.common.hash.Funnel;
-import com.google.common.hash.Funnels;
 import com.google.common.hash.HashCode;
 import com.google.common.hash.Hashing;
 import io.airlift.log.Logger;
 import io.airlift.slice.BasicSliceInput;
 import io.airlift.slice.DynamicSliceOutput;
 import io.airlift.slice.Slice;
+import orestes.bloomfilter.FilterBuilder;
+import orestes.bloomfilter.HashProvider;
 import org.apache.commons.io.IOUtils;
 import org.objenesis.strategy.StdInstantiatorStrategy;
 
@@ -41,18 +41,12 @@ import java.util.zip.GZIPOutputStream;
 //   bf: is the serialized bloom filter
 public class BloomFilter
 {
-    private com.google.common.hash.BloomFilter<byte[]> instance;
+    private orestes.bloomfilter.BloomFilter<Byte[]> instance;
     private int expectedInsertions;
     private double falsePositivePercentage;
-    private static Funnel<byte[]> funnel;
     private Kryo kryo;
-    private static final boolean KRYO_ENABLED = true;
 
     private static final Logger log = Logger.get(BloomFilter.class);
-
-    static {
-        BloomFilter.funnel = Funnels.byteArrayFunnel();
-    }
 
     public static final int DEFAULT_BLOOM_FILTER_EXPECTED_INSERTIONS = 10_000_000;
     public static final double DEFAULT_BLOOM_FILTER_FALSE_POSITIVE_PERCENTAGE = 0.01;
@@ -97,12 +91,9 @@ public class BloomFilter
         this.falsePositivePercentage = falsePositivePercentage;
         instance = newBloomFilter();
 
-        if (KRYO_ENABLED) {
-            kryo = new Kryo();
-            kryo.setInstantiatorStrategy(new StdInstantiatorStrategy());
-            kryo.register(com.google.common.hash.BloomFilter.class);
-            kryo.register(Slice.class);
-        }
+        kryo = new Kryo();
+        kryo.setInstantiatorStrategy(new StdInstantiatorStrategy());
+        kryo.register(orestes.bloomfilter.BloomFilter.class);
     }
 
     public void put(Slice s)
@@ -110,23 +101,18 @@ public class BloomFilter
         if (s == null || s.length() < 1) {
             return;
         }
-        instance.put(s.getBytes());
+        instance.add(s.getBytes());
     }
 
     public BloomFilter putAll(BloomFilter other)
     {
-        instance.putAll(other.instance);
+        instance.union(other.instance);
         return this;
     }
 
     public boolean mightContain(Slice s)
     {
-        return instance.mightContain(s.getBytes());
-    }
-
-    public Funnel<byte[]> getFunnel()
-    {
-        return funnel;
+        return instance.contains(s.getBytes());
     }
 
     private void load(Slice serialized)
@@ -168,14 +154,9 @@ public class BloomFilter
 
         // Setup bloom filter
         try {
-            if (KRYO_ENABLED) {
-                Input i = new Input(in);
-                instance = getKryo().readObject(i, com.google.common.hash.BloomFilter.class);
-                input.close();
-            }
-            else {
-                instance = com.google.common.hash.BloomFilter.readFrom(in, getFunnel());
-            }
+            Input i = new Input(in);
+            instance = getKryo().readObject(i, orestes.bloomfilter.BloomFilter.class);
+            input.close();
         }
         catch (Exception ix) {
             log.error(ix);
@@ -183,9 +164,12 @@ public class BloomFilter
         }
     }
 
-    private com.google.common.hash.BloomFilter<byte[]> newBloomFilter()
+    private orestes.bloomfilter.BloomFilter<Byte[]> newBloomFilter()
     {
-        return com.google.common.hash.BloomFilter.create(getFunnel(), expectedInsertions, falsePositivePercentage);
+        return
+                new FilterBuilder(expectedInsertions, falsePositivePercentage)
+                        .hashFunction(HashProvider.HashMethod.Murmur3KirschMitzenmacher)
+                        .buildBloomFilter();
     }
 
     public Kryo getKryo()
@@ -198,22 +182,14 @@ public class BloomFilter
         int size;
         byte[] bytes = new byte[0];
         try {
-            if (KRYO_ENABLED) {
-                // Kryo
-                ByteArrayOutputStream buffer2 = new ByteArrayOutputStream();
-                Output o = new  Output(buffer2);
-                getKryo().writeObject(o, instance);
-                o.flush();
-                bytes = buffer2.toByteArray();
-                o.close();
-                buffer2.close();
-            }
-            else {
-                // Write bloom filter to bytes by using the bloom filter method
-                ByteArrayOutputStream buffer = new ByteArrayOutputStream();
-                instance.writeTo(buffer);
-                bytes = buffer.toByteArray();
-            }
+            // Kryo
+            ByteArrayOutputStream buffer2 = new ByteArrayOutputStream();
+            Output o = new  Output(buffer2);
+            getKryo().writeObject(o, instance);
+            o.flush();
+            bytes = buffer2.toByteArray();
+            o.close();
+            buffer2.close();
         }
         catch (Exception ix) {
             log.error(ix);
