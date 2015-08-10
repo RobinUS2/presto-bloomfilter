@@ -53,7 +53,7 @@ public class BloomFilter
     static {
         BloomFilter.funnel = Funnels.byteArrayFunnel();
     }
-a
+
     public static final int DEFAULT_BLOOM_FILTER_EXPECTED_INSERTIONS = 10_000_000;
     public static final double DEFAULT_BLOOM_FILTER_FALSE_POSITIVE_PERCENTAGE = 0.01;
 
@@ -107,11 +107,10 @@ a
 
     public void put(Slice s)
     {
-        return;
-//        if (s == null || s.length() < 1) {
-//            return;
-//        }
-//        instance.put(s.getBytes());
+        if (s == null || s.length() < 1) {
+            return;
+        }
+        instance.put(s.getBytes());
     }
 
     public BloomFilter putAll(BloomFilter other)
