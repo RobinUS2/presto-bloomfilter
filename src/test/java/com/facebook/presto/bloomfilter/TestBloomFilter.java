@@ -168,6 +168,6 @@ public class TestBloomFilter
             assertNotNull(h);
         }
         long took = new Date().getTime() - start;
-        assertTrue(took < 1000L);
+        assertTrue(took < 5000L);
     }
 }
