@@ -13,22 +13,16 @@
  */
 package com.facebook.presto.bloomfilter;
 
-import com.esotericsoftware.kryo.Kryo;
-import com.esotericsoftware.kryo.io.Input;
-//import com.esotericsoftware.kryo.io.Output;
+import com.google.common.annotations.VisibleForTesting;
 import com.google.common.hash.HashCode;
 import com.google.common.hash.Hashing;
-//import com.google.gson.JsonElement;
-//import com.google.gson.JsonParser;
 import io.airlift.log.Logger;
 import io.airlift.slice.BasicSliceInput;
 import io.airlift.slice.DynamicSliceOutput;
 import io.airlift.slice.Slice;
 import orestes.bloomfilter.FilterBuilder;
 import orestes.bloomfilter.HashProvider;
-//import orestes.bloomfilter.json.BloomFilterConverter;
 import org.apache.commons.io.IOUtils;
-import org.objenesis.strategy.StdInstantiatorStrategy;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
@@ -39,18 +33,23 @@ import java.io.ObjectOutputStream;
 import java.util.zip.GZIPInputStream;
 import java.util.zip.GZIPOutputStream;
 
-// Layout is <hash>:<size>:<bf>, where
+// Layout is <hash>:<size>:<size_pre>:<bf_pre>:<bf>, where
 //   hash: is a sha256 hash of the bloom filter
 //   size: is an int describing the length of the bf bytes
+//   size_pre: is an int describing the length of the pre bf bytes
 //   expectedInsertions: is an int describing the amount of expected elements
 //   falsePositivePercentage: is a double describing the desired false positive percentage
+//   bf_pre: is the serialized bloom filter used for pre-filtering
 //   bf: is the serialized bloom filter
 public class BloomFilter
 {
+    private orestes.bloomfilter.BloomFilter instancePreFilter;
     private orestes.bloomfilter.BloomFilter instance;
     private int expectedInsertions;
     private double falsePositivePercentage;
-    private Kryo kryo;
+    private long preMiss = 0;
+
+    private static final boolean USE_PRE_FILTER = true;
 
     private static final Logger log = Logger.get(BloomFilter.class);
 
@@ -95,31 +94,54 @@ public class BloomFilter
     {
         this.expectedInsertions = expectedInsertions;
         this.falsePositivePercentage = falsePositivePercentage;
-        instance = newBloomFilter();
-
-        kryo = new Kryo();
-        kryo.setInstantiatorStrategy(new StdInstantiatorStrategy());
-        kryo.register(orestes.bloomfilter.BloomFilter.class);
-        kryo.register(Byte.class);
+        initbloomFilters();
     }
 
     public void put(Slice s)
     {
-        if (s == null || s.length() < 1) {
+        if (s == null) {
             return;
         }
-        instance.add(s.getBytes());
+        byte[] b = s.getBytes();
+        if (b.length < 1) {
+            return;
+        }
+        instance.add(b);
+        if (USE_PRE_FILTER) {
+            instancePreFilter.add(b);
+        }
     }
 
     public BloomFilter putAll(BloomFilter other)
     {
         instance.union(other.instance);
+        if (USE_PRE_FILTER) {
+            instancePreFilter.union(other.instancePreFilter);
+        }
         return this;
     }
 
     public boolean mightContain(Slice s)
     {
-        return instance.contains(s.getBytes());
+        byte[] b = s.getBytes();
+        if (USE_PRE_FILTER) {
+            if (instancePreFilter.contains(b)) {
+                return instance.contains(b);
+            }
+            else {
+                preMiss++;
+                return false;
+            }
+        }
+        else {
+            return instance.contains(b);
+        }
+    }
+
+    @VisibleForTesting
+    public long getPreMiss()
+    {
+        return preMiss;
     }
 
     private void load(Slice serialized)
@@ -132,6 +154,9 @@ public class BloomFilter
 
         // Get the size of the bloom filter
         int bfSize = input.readInt();
+
+        // Get the size of the bloom filter
+        int bfSizePre = input.readInt();
 
         // Params
         expectedInsertions = input.readInt();
@@ -161,19 +186,53 @@ public class BloomFilter
 
         // Setup bloom filter
         try {
-            Input i = new Input(in);
-            //instance = getKryo().readObject(i, orestes.bloomfilter.BloomFilter.class);
-//            JsonParser jp = new JsonParser();
-//            JsonElement elm = jp.parse(new String(uncompressed));
-//            instance = BloomFilterConverter.fromJson(elm);
             ObjectInputStream ois = new ObjectInputStream(in);
             instance = (orestes.bloomfilter.BloomFilter) ois.readObject();
             input.close();
         }
         catch (Exception ix) {
             log.error(ix);
-            instance = newBloomFilter();
+            initbloomFilters();
         }
+
+        // Read the buffer
+        ByteArrayOutputStream outPre = new ByteArrayOutputStream();
+        try {
+            input.readBytes(outPre, bfSizePre);
+        }
+        catch (IOException ix) {
+            log.error(ix);
+        }
+
+        // Uncompress
+        byte[] uncompressedPre;
+        try {
+            uncompressedPre = decompress(outPre.toByteArray());
+        }
+        catch (IOException ix) {
+            log.error(ix);
+            uncompressedPre = new byte[0];
+        }
+
+        // Input stream
+        ByteArrayInputStream inPre = new ByteArrayInputStream(uncompressedPre);
+
+        // Setup bloom filter
+        try {
+            ObjectInputStream ois = new ObjectInputStream(inPre);
+            instancePreFilter = (orestes.bloomfilter.BloomFilter) ois.readObject();
+            input.close();
+        }
+        catch (Exception ix) {
+            log.error(ix);
+            initbloomFilters();
+        }
+    }
+
+    private void initbloomFilters()
+    {
+        instance = newBloomFilter();
+        instancePreFilter = newPreBloomFilter();
     }
 
     private orestes.bloomfilter.BloomFilter newBloomFilter()
@@ -184,27 +243,29 @@ public class BloomFilter
                         .buildBloomFilter();
     }
 
-    public Kryo getKryo()
+    private orestes.bloomfilter.BloomFilter newPreBloomFilter()
     {
-        return kryo;
+        return
+                new FilterBuilder(Math.max(expectedInsertions / 10, 10), Math.max(falsePositivePercentage * 10, 0.0001))
+                        .hashFunction(HashProvider.HashMethod.FNVWithLCG)
+                        .hashes(1)
+                        .buildBloomFilter();
     }
 
     public Slice serialize()
     {
-        int size;
         byte[] bytes = new byte[0];
+        byte[] bytesPre = new byte[0];
         try {
-            // Kryo
-            ByteArrayOutputStream buffer2 = new ByteArrayOutputStream();
-//            Output o = new  Output(buffer2);
-//            getKryo().writeObject(o, instance);
-//            o.flush();
-//            buffer2.write(BloomFilterConverter.toJson(instance).toString().getBytes());
-            ObjectOutput output = new ObjectOutputStream(buffer2);
+            ByteArrayOutputStream buffer = new ByteArrayOutputStream();
+            ObjectOutput output = new ObjectOutputStream(buffer);
             output.writeObject(instance);
-            bytes = buffer2.toByteArray();
-//            o.close();
-//            buffer2.close();
+            bytes = buffer.toByteArray();
+
+            ByteArrayOutputStream bufferPre = new ByteArrayOutputStream();
+            ObjectOutput outputPre = new ObjectOutputStream(bufferPre);
+            outputPre.writeObject(instancePreFilter);
+            bytesPre = bufferPre.toByteArray();
         }
         catch (Exception ix) {
             log.error(ix);
@@ -222,7 +283,18 @@ public class BloomFilter
             log.error(ix);
             compressed = new byte[0];
         }
-        size = compressed.length;
+        int size = compressed.length;
+
+        // Compress
+        byte[] compressedPre;
+        try {
+            compressedPre = compress(bytesPre);
+        }
+        catch (IOException ix) {
+            log.error(ix);
+            compressedPre = new byte[0];
+        }
+        int sizePre = compressedPre.length;
 
         // To slice
         DynamicSliceOutput output = new DynamicSliceOutput(size);
@@ -233,12 +305,18 @@ public class BloomFilter
         // Write the length of the bloom filter
         output.appendInt(size);
 
+        // Write the length of the pre bloom filter
+        output.appendInt(sizePre);
+
         // Params
         output.appendInt(expectedInsertions);
         output.appendDouble(falsePositivePercentage);
 
         // Write the bloom filter
         output.appendBytes(compressed);
+
+        // Write the bloom filter
+        output.appendBytes(compressedPre);
 
         return output.slice();
     }

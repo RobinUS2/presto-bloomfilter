@@ -19,7 +19,6 @@ import io.airlift.slice.Slices;
 import org.testng.annotations.Test;
 
 import java.util.Date;
-import java.util.Random;
 
 import static org.testng.Assert.assertFalse;
 import static org.testng.Assert.assertNotNull;
@@ -42,68 +41,6 @@ public class TestBloomFilter
         bf.put(Slices.wrappedBuffer("robin".getBytes()));
         assertTrue(bf.mightContain(Slices.wrappedBuffer("robin".getBytes())));
         assertFalse(bf.mightContain(Slices.wrappedBuffer("verlangen".getBytes())));
-    }
-
-    @Test
-    public void testBloomFilterPerformancePut()
-    {
-        BloomFilter bf = BloomFilter.newInstance();
-        long start = new Date().getTime();
-        Random rand = new Random();
-        byte[] buf = new byte[32];
-        for (int i = 0; i < 1000000; i++) {
-            rand.nextBytes(buf);
-            Slice x = Slices.wrappedBuffer(buf);
-            bf.put(x);
-        }
-        long took = new Date().getTime() - start;
-        assertTrue(took < 10000L);
-    }
-
-    @Test
-    public void testBloomFilterPerformanceContains()
-    {
-        BloomFilter bf = BloomFilter.newInstance();
-        long start = new Date().getTime();
-        Random rand = new Random();
-        byte[] buf = new byte[32];
-        for (int i = 0; i < 1000000; i++) {
-            rand.nextBytes(buf);
-            Slice x = Slices.wrappedBuffer(buf);
-            bf.mightContain(x);
-        }
-        long took = new Date().getTime() - start;
-        assertTrue(took < 10000L);
-    }
-
-    @Test
-    public void testBloomFilterPerformancePutAndMightContains()
-    {
-        BloomFilter bf = BloomFilter.newInstance();
-        long start = new Date().getTime();
-        Random rand = new Random();
-
-        // Load data
-        byte[] buf = new byte[4]; // not much of data as we want to find matches
-        for (int i = 0; i < 1000000; i++) {
-            rand.nextBytes(buf);
-            Slice x = Slices.wrappedBuffer(buf);
-            bf.put(x);
-        }
-
-        // Read data
-        int matches = 0;
-        for (int i = 0; i < 1000000; i++) {
-            rand.nextBytes(buf);
-            Slice x = Slices.wrappedBuffer(buf);
-            if (bf.mightContain(x)) {
-                matches++;
-            }
-        }
-
-        long took = new Date().getTime() - start;
-        assertTrue(took < 10000L);
-        assertTrue(matches >= 1);
     }
 
     @Test
