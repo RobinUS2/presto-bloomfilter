@@ -116,14 +116,13 @@ public class BloomFilter
 
     public BloomFilter putAll(BloomFilter other)
     {
-//        instance.putAll(other.instance);
+        instance.putAll(other.instance);
         return this;
     }
 
     public boolean mightContain(Slice s)
     {
-        return false;
-//        return instance.mightContain(s.getBytes());
+        return instance.mightContain(s.getBytes());
     }
 
     public Funnel<byte[]> getFunnel()
