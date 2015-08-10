@@ -107,27 +107,28 @@ public class BloomFilter
 
     public void put(Slice s)
     {
-        if (s == null || s.length() < 1) {
-            return;
-        }
-        instance.put(s.getBytes());
+        return;
+//        if (s == null || s.length() < 1) {
+//            return;
+//        }
+//        instance.put(s.getBytes());
     }
 
     public BloomFilter putAll(BloomFilter other)
     {
-        instance.putAll(other.instance);
+//        instance.putAll(other.instance);
         return this;
-    }
-
-    public Funnel<byte[]> getFunnel()
-    {
-        return funnel;
     }
 
     public boolean mightContain(Slice s)
     {
         return false;
 //        return instance.mightContain(s.getBytes());
+    }
+
+    public Funnel<byte[]> getFunnel()
+    {
+        return funnel;
     }
 
     private void load(Slice serialized)
