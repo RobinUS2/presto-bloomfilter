@@ -55,7 +55,7 @@ public class TestBloomFilterSerialization
         BloomFilter bf = BloomFilter.newInstance();
         long start = new Date().getTime();
         bf.put(Slices.wrappedBuffer("robin".getBytes()));
-        for (int i = 0; i < 100; i++) {
+        for (int i = 0; i < 10; i++) {
             // @todo Check optimize, seems to take about 20ms
             bf.serialize();
         }
@@ -70,7 +70,7 @@ public class TestBloomFilterSerialization
         long start = new Date().getTime();
         bf.put(Slices.wrappedBuffer("robin".getBytes()));
         Slice ser = bf.serialize();
-        for (int i = 0; i < 100; i++) {
+        for (int i = 0; i < 10; i++) {
             // @todo Check optimize, seems to take about 20ms
             BloomFilter.newInstance(ser);
         }

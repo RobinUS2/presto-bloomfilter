@@ -15,21 +15,27 @@ package com.facebook.presto.bloomfilter;
 
 import com.esotericsoftware.kryo.Kryo;
 import com.esotericsoftware.kryo.io.Input;
-import com.esotericsoftware.kryo.io.Output;
+//import com.esotericsoftware.kryo.io.Output;
 import com.google.common.hash.HashCode;
 import com.google.common.hash.Hashing;
+//import com.google.gson.JsonElement;
+//import com.google.gson.JsonParser;
 import io.airlift.log.Logger;
 import io.airlift.slice.BasicSliceInput;
 import io.airlift.slice.DynamicSliceOutput;
 import io.airlift.slice.Slice;
 import orestes.bloomfilter.FilterBuilder;
 import orestes.bloomfilter.HashProvider;
+//import orestes.bloomfilter.json.BloomFilterConverter;
 import org.apache.commons.io.IOUtils;
 import org.objenesis.strategy.StdInstantiatorStrategy;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutput;
+import java.io.ObjectOutputStream;
 import java.util.zip.GZIPInputStream;
 import java.util.zip.GZIPOutputStream;
 
@@ -41,7 +47,7 @@ import java.util.zip.GZIPOutputStream;
 //   bf: is the serialized bloom filter
 public class BloomFilter
 {
-    private orestes.bloomfilter.BloomFilter<Byte[]> instance;
+    private orestes.bloomfilter.BloomFilter instance;
     private int expectedInsertions;
     private double falsePositivePercentage;
     private Kryo kryo;
@@ -94,6 +100,7 @@ public class BloomFilter
         kryo = new Kryo();
         kryo.setInstantiatorStrategy(new StdInstantiatorStrategy());
         kryo.register(orestes.bloomfilter.BloomFilter.class);
+        kryo.register(Byte.class);
     }
 
     public void put(Slice s)
@@ -155,7 +162,12 @@ public class BloomFilter
         // Setup bloom filter
         try {
             Input i = new Input(in);
-            instance = getKryo().readObject(i, orestes.bloomfilter.BloomFilter.class);
+            //instance = getKryo().readObject(i, orestes.bloomfilter.BloomFilter.class);
+//            JsonParser jp = new JsonParser();
+//            JsonElement elm = jp.parse(new String(uncompressed));
+//            instance = BloomFilterConverter.fromJson(elm);
+            ObjectInputStream ois = new ObjectInputStream(in);
+            instance = (orestes.bloomfilter.BloomFilter) ois.readObject();
             input.close();
         }
         catch (Exception ix) {
@@ -164,7 +176,7 @@ public class BloomFilter
         }
     }
 
-    private orestes.bloomfilter.BloomFilter<Byte[]> newBloomFilter()
+    private orestes.bloomfilter.BloomFilter newBloomFilter()
     {
         return
                 new FilterBuilder(expectedInsertions, falsePositivePercentage)
@@ -184,12 +196,15 @@ public class BloomFilter
         try {
             // Kryo
             ByteArrayOutputStream buffer2 = new ByteArrayOutputStream();
-            Output o = new  Output(buffer2);
-            getKryo().writeObject(o, instance);
-            o.flush();
+//            Output o = new  Output(buffer2);
+//            getKryo().writeObject(o, instance);
+//            o.flush();
+//            buffer2.write(BloomFilterConverter.toJson(instance).toString().getBytes());
+            ObjectOutput output = new ObjectOutputStream(buffer2);
+            output.writeObject(instance);
             bytes = buffer2.toByteArray();
-            o.close();
-            buffer2.close();
+//            o.close();
+//            buffer2.close();
         }
         catch (Exception ix) {
             log.error(ix);

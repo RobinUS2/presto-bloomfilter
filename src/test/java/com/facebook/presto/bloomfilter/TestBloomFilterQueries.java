@@ -77,7 +77,7 @@ public class TestBloomFilterQueries
             throws Exception
     {
         // Test positive in bloom filter
-        assertQuery("SELECT to_string(bloom_filter('', 10))", "SELECT 'OATkV8tpFEB8wtWC2TvvAuIpP84vCYb03RJqr/C+19lnAAAACgAAAHsUrkfheoQ/H4sIAAAAAAAAAGNkZGBkZmBgZEjOz9VLz89Pz0nVAzJz8/P0MhKLM/TcSvPyUnOKVZwqS1Idi4oSK8ECbxgZ+RgZcWhxysnPz3XLzClJLQouKUosSU3PTC1W2cTIBABhIduzbAAAAA=='");
+        assertQuery("SELECT to_string(bloom_filter('', 10))", "SELECT 'E3C+FS5Mv7a7AI6kofHMOSY4o3Pqw9v952LC1o6IQGFjAwAACgAAAHsUrkfheoQ/H4sIAAAAAAAAAJVUzWtVRxQ/eXlJmxhj8pRiFwG/Fgbje4tKqWShffkwL76kgbiQvE3n3TvvvUnmztzOnPt8SSFUMG1BBMGPXWkp7pQWkaK4dNNFQf0TUrel4M6FCM7MvTe5KQlt72LucOZ3fnPO75wzD/6GHq1gTCqqkepinUsZNBhHqooBDaRaLZatadqZ5pzl519vlJ/Nbr7OQa4KPc4DoVBdJm1SipDxUpnhIsXxKvR6UjRYE+F4NbmglLmgFJOWI8Z9qsY7oQlkyLIULUsxZhHvvl8/e+b+0W7oqkG+zlAj5GqznTBS7n8k/1vhYXQrB9AJAcD8d34dQ3p0t+x2XP66u/f3P34ov8jBgSXI+1LQJRiWbaquKIa00pjqMI16CfYp6jNdJt4K9asw4MlIIBPNsgvrYCwBJ6JZqgikTZNUFYZoJ6QeUn+K04AK1F/BOvRX4XCDcE0XpGbI2nRByTqpM85wdUtLRzQpozqnhmegRXRrOhIeMikQSrsqOmMwhqrNTE4nZjIOhqDfEsxRbEkf4fR/c4/htpLWmaax5wUJ6M44F1EZIWy+TqIJKQR1N6c+fc4+IzVaw2BqWJAKU1bN1miy79WctE2AcCDTV7apOmEXgKnpsGsUe3Ux0brw6qd7b65+91kOuirQ0yY8op20oRxuPgrqVH374M7Ivtub19OOGXIBDptdv94Bj5X/5tGz2dGVt3nDOpmyWofCuWtrf1745dDXtr+2nZhoyxVaXKSKEW7S8askqPtEkpe3x0Y/3chBfwUGWRDyWNmLTPg100ckxMjI8blq2j6qZXT9or5sdDS6DsYgI/IEJ9rAhjMoZxq3TZXUm3CrimoQj7qzRPORXc7jSOZNRRPQsT1Bi6wpiI00LaHNJMufSS1DeHDb+k+Gj5jQSMwQETMhMeTSahifuvL0mjlPBIkVTgS5+fzyj0N6lKdlhLaCU7vN+R49nb4PBeOvYHCbf0pEQfYwNMPyv0YNIW+HBeHDk7VypTJaqyAc+TcGhP3WacJISYSviBXgmFvW7TqC8PFcpIJIfXKRKe215hiuUREQr0XVVgN/gAB2fwihj0uP8JaZtvT08F9buC+35sc9tDYOM1pPJzfu3H3y+Ey3TfrKgMF1nTufPKLvAZx8e/cnBgAA'");
     }
 
     private static LocalQueryRunner createLocalQueryRunner()
