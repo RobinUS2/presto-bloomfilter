@@ -32,8 +32,8 @@ public class TestBloomFilterPerformanceContains
         long start = new Date().getTime();
         Random rand = new Random();
         byte[] buf = new byte[32];
-        int iterations = 10000000;
-        for (int i = 0; i < 10000000; i++) {
+        int iterations = 1000000;
+        for (int i = 0; i < iterations; i++) {
             rand.nextBytes(buf);
             Slice x = Slices.wrappedBuffer(buf);
             bf.mightContain(x);
