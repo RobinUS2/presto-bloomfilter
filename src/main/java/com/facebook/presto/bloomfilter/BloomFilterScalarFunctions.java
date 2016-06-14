@@ -22,6 +22,7 @@ import com.google.common.hash.HashCode;
 import io.airlift.log.Logger;
 import io.airlift.slice.Slice;
 import io.airlift.slice.Slices;
+import javafx.scene.effect.Bloom;
 
 import javax.annotation.Nullable;
 
