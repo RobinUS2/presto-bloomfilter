@@ -54,6 +54,12 @@ Will create a Bloom Filter with expected inesrtions hint (amount of elements you
 
 Will create a Bloom Filter with custom settings. Percentage should be in the range [0-1].
 
+### Scalar
+`bloom_filter_contains(<BloomFilter>, <element>)` -> boolean
+
+Returns ``TRUE`` if the item is probably in the set and returns ``FALSE`` if it is definitely not in there.
+
+### Serialization
 `to_string(<BloomFilter>)` -> VarChar
 
 Will serialized (~ convert) a Bloom Filter with all it's settings to a string.
@@ -61,11 +67,6 @@ Will serialized (~ convert) a Bloom Filter with all it's settings to a string.
 `bloom_filter_from_string(<element:VARCHAR>)` -> BloomFilter
 
 This will load a previously serialized string back into a Bloom Filter object.
-
-### Scalar
-`bloom_filter_contains(<BloomFilter>, <element>)` -> boolean
-
-Returns ``TRUE`` if the item is probably in the set and returns ``FALSE`` if it is definitely not in there.
 
 Bloom Filters
 -------------
