@@ -18,7 +18,6 @@ import com.facebook.presto.operator.aggregation.CombineFunction;
 import com.facebook.presto.operator.aggregation.InputFunction;
 import com.facebook.presto.operator.aggregation.OutputFunction;
 import com.facebook.presto.spi.block.BlockBuilder;
-import com.facebook.presto.spi.type.StandardTypes;
 import com.facebook.presto.type.SqlType;
 import io.airlift.slice.Slice;
 
