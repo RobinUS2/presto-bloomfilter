@@ -59,6 +59,15 @@ Will create a Bloom Filter with custom settings. Percentage should be in the ran
 
 Returns ``TRUE`` if the item is probably in the set and returns ``FALSE`` if it is definitely not in there.
 
+### Serialization
+`to_string(<BloomFilter>)` -> VarChar
+
+Will serialized (~ convert) a Bloom Filter with all it's settings to a string.
+
+`bloom_filter_from_string(<element:VARCHAR>)` -> BloomFilter
+
+This will load a previously serialized string back into a Bloom Filter object.
+
 Bloom Filters
 -------------
 This project uses the [Bloom Filter](https://en.wikipedia.org/wiki/Bloom_filter) probabilistic data structure to keep track whether an element is part of a set.
