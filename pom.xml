@@ -7,12 +7,12 @@
     <parent><!-- do we need this -->
         <groupId>com.facebook.presto</groupId>
         <artifactId>presto-root</artifactId>
-        <version>0.115-SNAPSHOT</version>
+        <version>0.147</version>
     </parent>
 
     <groupId>com.facebook.presto</groupId>
     <artifactId>presto-bloomfilter</artifactId>
-    <version>0.115-SNAPSHOT</version>
+    <version>0.147</version>
     <packaging>presto-plugin</packaging>
 
     <properties>
@@ -84,7 +84,7 @@
         <dependency>
             <groupId>com.baqend</groupId>
             <artifactId>bloom-filter</artifactId>
-            <version>1.0.6</version>
+            <version>1.0.7</version>
         </dependency>
 
         <!-- for testing -->
@@ -113,6 +113,16 @@
             <scope>test</scope>
         </dependency>
     </dependencies>
+
+    <dependencyManagement>
+        <dependencies>
+            <dependency>
+                <groupId>redis.clients</groupId>
+                <artifactId>jedis</artifactId>
+                <version>2.7.2</version>
+            </dependency>
+        </dependencies>
+    </dependencyManagement>
 
     <repositories>
         <repository>

@@ -94,7 +94,7 @@ public class TestBloomFilterAggregation
         BloomFilterState state = f.createSingleState();
         BloomFilterAggregation.input(state, Slices.utf8Slice("robin"));
         BlockBuilderStatus bbs = new BlockBuilderStatus();
-        BlockBuilder bb = new VariableWidthBlockBuilder(bbs);
+        BlockBuilder bb = new VariableWidthBlockBuilder(bbs, 1, 5); // @todo check 1 and 5 params
         BloomFilterAggregation.output(state, bb);
 
         assertTrue(bb.build().getSizeInBytes() > 1);

@@ -45,13 +45,13 @@ public class TestBloomFilterQueries
         assertQuery("WITH a AS (SELECT bloom_filter(null) AS bf) SELECT bloom_filter_contains(a.bf, 'test') FROM a", "SELECT false");
 
         // Test positive in bloom filter
-        assertQueryTrue("WITH a AS (SELECT bloom_filter('test') AS bf) SELECT bloom_filter_contains(a.bf, 'test') FROM a LIMIT 1");
+        assertQuery("WITH a AS (SELECT bloom_filter('test') AS bf) SELECT bloom_filter_contains(a.bf, 'test') FROM a LIMIT 1", "SELECT true");
 
         // Test negative in filter
         assertQuery("WITH a AS (SELECT bloom_filter('test') AS bf) SELECT bloom_filter_contains(a.bf, 'not-in-here') FROM a LIMIT 1", "SELECT false");
 
         // Test with config (expected insertions)
-        assertQueryTrue("WITH a AS (SELECT bloom_filter('test', 10) AS bf) SELECT bloom_filter_contains(a.bf, 'test') FROM a LIMIT 1");
+        assertQuery("WITH a AS (SELECT bloom_filter('test', 10) AS bf) SELECT bloom_filter_contains(a.bf, 'test') FROM a LIMIT 1", "SELECT true");
 
         // Test with config (expected insertions)
         assertQuery("SELECT get_expected_insertions(bloom_filter('test', 10))", "SELECT 10");
@@ -60,7 +60,7 @@ public class TestBloomFilterQueries
         assertQuery("SELECT get_false_positive_percentage(bloom_filter('test', 10, 0.1234))", "SELECT 0.1234");
 
         // Test with config (expected insertions AND false positive percentage)
-        assertQueryTrue("WITH a AS (SELECT bloom_filter('test', 10, 0.001) AS bf) SELECT bloom_filter_contains(a.bf, 'test') FROM a LIMIT 1");
+        assertQuery("WITH a AS (SELECT bloom_filter('test', 10, 0.001) AS bf) SELECT bloom_filter_contains(a.bf, 'test') FROM a LIMIT 1", "SELECT true");
 
         // Use 2 bloom filters in a single query
         assertQuery("WITH a AS (SELECT bloom_filter('a') AS bf), b AS (SELECT bloom_filter('b') AS bf) SELECT bloom_filter_contains(a.bf, 'a'), bloom_filter_contains(a.bf, 'b'), bloom_filter_contains(b.bf, 'a'), bloom_filter_contains(b.bf, 'b') FROM a,b LIMIT 1", "SELECT true, false, false, true");
@@ -77,7 +77,7 @@ public class TestBloomFilterQueries
             throws Exception
     {
         // Test positive in bloom filter
-        assertQuery("SELECT to_string(bloom_filter('', 10))", "SELECT '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'");
+        assertQuery("SELECT to_string(bloom_filter('', 10))", "SELECT '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'");
     }
 
     private static LocalQueryRunner createLocalQueryRunner()
@@ -92,7 +92,7 @@ public class TestBloomFilterQueries
         // add the tpch catalog
         // local queries run directly against the generator
         localQueryRunner.createCatalog(
-                defaultSession.getCatalog(),
+                defaultSession.getCatalog().get(),
                 new TpchConnectorFactory(localQueryRunner.getNodeManager(), 1),
                 ImmutableMap.<String, String>of());
 
