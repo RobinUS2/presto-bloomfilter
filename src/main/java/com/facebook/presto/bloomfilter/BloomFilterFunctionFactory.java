@@ -36,6 +36,7 @@ public class BloomFilterFunctionFactory
         return new FunctionListBuilder(typeManager)
                 .scalar(BloomFilterScalarFunctions.class)
                 .aggregate(BloomFilterAggregation.class)
+                .aggregate(BloomFilterFromString.class)
                 .getFunctions();
     }
 }

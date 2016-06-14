@@ -20,6 +20,7 @@ import io.airlift.log.Logger;
 import io.airlift.slice.BasicSliceInput;
 import io.airlift.slice.DynamicSliceOutput;
 import io.airlift.slice.Slice;
+import io.airlift.slice.Slices;
 import orestes.bloomfilter.FilterBuilder;
 import orestes.bloomfilter.HashProvider;
 import org.apache.commons.io.IOUtils;
@@ -81,6 +82,15 @@ public class BloomFilter
     public static BloomFilter newInstance(int expectedInsertions)
     {
         return new BloomFilter(expectedInsertions, DEFAULT_BLOOM_FILTER_FALSE_POSITIVE_PERCENTAGE);
+    }
+
+    // Construct from serialized string
+    public static BloomFilter newInstance(byte[] fromBytes)
+    {
+        BloomFilter bf = newInstance();
+        byte[] serializedBytes = java.util.Base64.getDecoder().decode(fromBytes);
+        bf.load(Slices.wrappedBuffer(serializedBytes));
+        return bf;
     }
 
     public static BloomFilter newInstance(Slice serialized)
