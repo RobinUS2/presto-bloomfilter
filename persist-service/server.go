@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"log"
 
+	"github.com/qiangxue/fasthttp-routing"
 	"github.com/valyala/fasthttp"
 )
 
