@@ -22,7 +22,19 @@ import com.facebook.presto.tpch.TpchConnectorFactory;
 import com.facebook.presto.type.ParametricType;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Iterables;
+import io.airlift.slice.Slices;
+import org.eclipse.jetty.server.Handler;
+import org.eclipse.jetty.server.Request;
+import org.eclipse.jetty.server.Server;
+import org.eclipse.jetty.server.handler.AbstractHandler;
 import org.testng.annotations.Test;
+
+import javax.servlet.ServletException;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
+import java.io.IOException;
+
 import static com.facebook.presto.testing.TestingSession.testSessionBuilder;
 import static com.facebook.presto.tpch.TpchMetadata.TINY_SCHEMA_NAME;
 
@@ -80,7 +92,47 @@ public class TestBloomFilterQueries
         assertQuery("SELECT to_string(bloom_filter('', 10))", "SELECT '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'");
 
         // Test construction
-        assertQuery("WITH a AS (SELECT 'robin' AS uuid), b AS (SELECT bloom_filter(a.uuid) AS bf FROM a), c AS (SELECT to_string(b.bf) AS j FROM b), d AS (SELECT bloom_filter_from_string(c.j) AS bf2 FROM c) SELECT bloom_filter_contains(d.bf2, 'robin'), bloom_filter_contains(d.bf2, 'henk') FROM d", "SELECT true, false");
+        assertQuery("WITH a AS (SELECT 'robin' AS uuid), b AS (SELECT bloom_filter(a.uuid) AS bf FROM a), c AS (SELECT to_string(b.bf) AS j FROM b), d AS (SELECT bloom_filter_from_string(c.j) AS bf2 FROM c) SELECT bloom_filter_contains(d.bf2, 'robin'), bloom_filter_contains(d.bf2, 'john') FROM d", "SELECT true, false");
+    }
+
+    @Test
+    public void testBloomFilterLoadPersist()
+            throws Exception
+    {
+        // Start local server
+        int port = 8081;
+        Server server = new Server(8081);
+        Handler handler = new AbstractHandler()
+        {
+            @Override
+            public void handle(String s, Request request, HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse) throws IOException, ServletException
+            {
+                httpServletResponse.setContentType("text/html");
+                if (httpServletRequest.getRequestURI().contains("bloomfilter/key1")) {
+                    // Get
+                    httpServletResponse.getOutputStream().write(BloomFilter.newInstance().put(Slices.wrappedBuffer("robin".getBytes())).toBase64());
+                    httpServletResponse.setStatus(HttpServletResponse.SC_OK);
+                }
+                else if (httpServletRequest.getMethod().equalsIgnoreCase("PUT")) {
+                    // Put
+                    httpServletResponse.setStatus(HttpServletResponse.SC_OK);
+                }
+            }
+        };
+        server.setHandler(handler);
+        server.start();
+
+        // Url
+        String url = "http://127.0.0.1:" + port + "/bloomfilter/key1";
+
+        // Test persist
+        assertQuery("WITH a AS (SELECT 'robin' AS uuid), b AS (SELECT bloom_filter(a.uuid) AS bf FROM a) SELECT bloom_filter_persist(b.bf, '" + url + "') FROM b", "SELECT true");
+
+        // Test load
+        assertQuery("WITH a AS (SELECT bloom_filter_load('" + url + "') AS bf) SELECT bloom_filter_contains(a.bf, 'robin'), bloom_filter_contains(a.bf, 'john') FROM a", "SELECT true, false");
+
+        // Tear down local server
+        server.stop();
     }
 
     private static LocalQueryRunner createLocalQueryRunner()

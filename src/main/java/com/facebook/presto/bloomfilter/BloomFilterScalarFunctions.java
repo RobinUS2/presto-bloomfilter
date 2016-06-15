@@ -22,6 +22,9 @@ import com.google.common.hash.HashCode;
 import io.airlift.log.Logger;
 import io.airlift.slice.Slice;
 import io.airlift.slice.Slices;
+import org.eclipse.jetty.client.HttpClient;
+import org.eclipse.jetty.client.api.Request;
+import org.eclipse.jetty.client.util.StringContentProvider;
 
 import javax.annotation.Nullable;
 
@@ -50,7 +53,27 @@ public final class BloomFilterScalarFunctions
     public static Slice bloomFilterToString(@SqlType(BloomFilterType.TYPE) Slice bloomFilterSlice)
     {
         BloomFilter bf = getOrLoadBloomFilter(bloomFilterSlice);
-        return Slices.wrappedBuffer(java.util.Base64.getEncoder().encode(bf.serialize().getBytes()));
+        return Slices.wrappedBuffer(bf.toBase64());
+    }
+
+    @Nullable
+    @ScalarFunction("bloom_filter_persist")
+    @SqlType(StandardTypes.BOOLEAN)
+    public static Boolean bloomFilterPersist(@SqlType(BloomFilterType.TYPE) Slice bloomFilterSlice, @SqlType(StandardTypes.VARCHAR) Slice urlSlice) throws Exception
+    {
+        BloomFilter bf = getOrLoadBloomFilter(bloomFilterSlice);
+
+        // Persist
+        String url = new String(urlSlice.getBytes());
+        HttpClient c = new HttpClient();
+        c.start(); // @todo singleton
+        Request post = c.POST(url);
+        post.content(new StringContentProvider(new String(bf.toBase64())));
+        post.method("PUT");
+        post.send();
+
+        log.info("Persisted " + bf.toString() + " " + url);
+        return true;
     }
 
     @Nullable

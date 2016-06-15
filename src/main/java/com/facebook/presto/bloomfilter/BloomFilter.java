@@ -24,6 +24,8 @@ import io.airlift.slice.Slices;
 import orestes.bloomfilter.FilterBuilder;
 import orestes.bloomfilter.HashProvider;
 import org.apache.commons.io.IOUtils;
+import org.eclipse.jetty.client.HttpClient;
+import org.eclipse.jetty.client.api.ContentResponse;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
@@ -93,6 +95,16 @@ public class BloomFilter
         return bf;
     }
 
+    public static BloomFilter fromUrl(String url) throws Exception
+    {
+        log.info("Loading bloom filter from " + url);
+        HttpClient c = new HttpClient();
+        c.start(); // @todo singleton
+        ContentResponse resp = c.GET(url);
+        byte[] bytes = resp.getContent();
+        return newInstance(bytes);
+    }
+
     public static BloomFilter newInstance(Slice serialized)
     {
         BloomFilter bf = newInstance();
@@ -107,19 +119,25 @@ public class BloomFilter
         initbloomFilters();
     }
 
-    public void put(Slice s)
+    public byte[] toBase64()
+    {
+        return java.util.Base64.getEncoder().encode(serialize().getBytes());
+    }
+
+    public BloomFilter put(Slice s)
     {
         if (s == null) {
-            return;
+            return this;
         }
         byte[] b = s.getBytes();
         if (b.length < 1) {
-            return;
+            return this;
         }
         instance.add(b);
         if (USE_PRE_FILTER) {
             instancePreFilter.add(b);
         }
+        return this;
     }
 
     public BloomFilter putAll(BloomFilter other)
