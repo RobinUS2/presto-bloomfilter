@@ -5,6 +5,7 @@ mkdir -p bin
 export GOBIN=$DIR/bin
 go get -v "github.com/qiangxue/fasthttp-routing"
 go get -v "github.com/valyala/fasthttp"
+go get -v "github.com/boltdb/bolt"
 echo "Changing directory to $DIR"
 cd $DIR
 go build -v .

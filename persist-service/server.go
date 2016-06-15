@@ -12,10 +12,15 @@ type Server struct {
 	requestHandler func(ctx *fasthttp.RequestCtx)
 	conf           *Conf
 	router         *routing.Router
+	backend        IBackend
 }
 
 // Init
 func (s *Server) init() {
+	// Backend
+	s.backend = newBackend(s.conf)
+
+	// Router
 	s.router = routing.New()
 
 	// Upsert operation that writes data
@@ -24,7 +29,27 @@ func (s *Server) init() {
 		key := c.Param("key")
 		body := c.PostBody()
 
-		log.Printf("%v %v", key, body)
+		// Put
+		res, resErr := s.backend.Put([]byte(key), []byte(body))
+
+		// Log
+		log.Printf("PUT %v %v %v %v", key, body, res, resErr)
+		return nil
+	})
+
+	// Get
+	s.router.Get("/bloomfilter/<key>", func(c *routing.Context) error {
+		// Params
+		key := c.Param("key")
+
+		// Get
+		res, resErr := s.backend.Get([]byte(key))
+
+		// Log
+		log.Printf("GET %v %v %v", key, res, resErr)
+
+		// Output
+		fmt.Fprintf(c, "%s", res)
 		return nil
 	})
 }
