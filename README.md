@@ -33,7 +33,7 @@ Let's go through this step by step:
 
 1.  The WITH-statement is basically a sub query which will go through the customers table. We only need the VIPs, and we want to have all the customer IDs in the bloom filter structure.
 2.  We stream all the customer IDs through the `bloom_filter` aggregation function. 
-3.  Once this is complete there will basically be a single bloom filter instance which can help us tell whether a customer ID is part of the set, or not.
+3.  Once this is complete there will basically be a single bloom filter instance which can help us tell whether a customer ID is part of the set, or not. Due to the characteristics of a bloom filter this doesn't require to send the full list of members of the set, reducing memory and network overhead.
 4.  We then go in the regular select to get the order data. 
 5.  The where statement uses `bloom_filter_contains` to find out whether an element is probably in a set. False positives are possible.
 
