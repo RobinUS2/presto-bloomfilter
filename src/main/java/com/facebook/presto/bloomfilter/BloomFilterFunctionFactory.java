@@ -37,6 +37,7 @@ public class BloomFilterFunctionFactory
                 .scalar(BloomFilterScalarFunctions.class)
                 .aggregate(BloomFilterAggregation.class)
                 .aggregate(BloomFilterFromString.class)
+                .aggregate(BloomFilterLoad.class)
                 .getFunctions();
     }
 }

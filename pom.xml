@@ -10,7 +10,6 @@
         <version>0.147</version>
     </parent>
 
-    <groupId>com.facebook.presto</groupId>
     <artifactId>presto-bloomfilter</artifactId>
     <version>0.147</version>
     <packaging>presto-plugin</packaging>
@@ -87,10 +86,28 @@
             <version>1.0.7</version>
         </dependency>
 
+        <dependency>
+            <groupId>org.eclipse.jetty</groupId>
+            <artifactId>jetty-client</artifactId>
+            <version>9.3.9.M1</version>
+        </dependency>
+
         <!-- for testing -->
         <dependency>
             <groupId>org.testng</groupId>
             <artifactId>testng</artifactId>
+            <scope>test</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>org.eclipse.jetty</groupId>
+            <artifactId>jetty-server</artifactId>
+            <scope>test</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>javax.servlet</groupId>
+            <artifactId>javax.servlet-api</artifactId>
             <scope>test</scope>
         </dependency>
 
