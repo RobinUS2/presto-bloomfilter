@@ -17,7 +17,9 @@ type Server struct {
 // Init
 func (s *Server) init() {
 	s.router = routing.New()
-	s.router.Post("/bloomfilter/<key>", func(c *routing.Context) error {
+
+	// Upsert operation that writes data
+	s.router.Put("/bloomfilter/<key>", func(c *routing.Context) error {
 		// Params
 		key := c.Param("key")
 		body := c.PostBody()
