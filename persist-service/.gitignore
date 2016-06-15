@@ -2,3 +2,4 @@ src/**
 bin/**
 pkg/**
 persist-service
+my.db
