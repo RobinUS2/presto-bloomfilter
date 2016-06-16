@@ -90,7 +90,7 @@ Simply go into the folder `persist-service` and run the `./build.sh` script. Thi
 Let's say you are running the persist service on a host with as hostname `my-persist-service.internal` on port `8081`. You can then have a URL like this: `http://my-persist-service.internal:8081/bloomfilter/my-first-bf` where `my-first-bf` is the actual key under which it's stored/loaded.
 
 ### Full example
-Step 1 - Loading the data
+Step 1 - Loading the data and saving it into a persisted bloom filter
 ```
 WITH input AS (SELECT 'one' AS val UNION SELECT 'two' AS val UNION SELECT 'three' AS val)
 SELECT bloom_filter_persist(bloom_filter(input.val), 'http://my-persist-service.internal:8081/bloomfilter/my-first-bf') FROM input;
@@ -103,7 +103,7 @@ yields
 (1 row)
 ```
 
-Step 2 - Using the bloom filter on your data
+Step 2 - Using the previously persisted bloom filter on your data
 ```
 WITH input AS (SELECT 'one' AS val UNION SELECT 'two' AS val UNION SELECT 'three' AS val UNION SELECT 'four' AS val UNION SELECT 'five' AS val), 
 bf AS (SELECT bloom_filter_load('http://my-persist-service.internal:8081/bloomfilter/my-first-bf') AS bf) 
