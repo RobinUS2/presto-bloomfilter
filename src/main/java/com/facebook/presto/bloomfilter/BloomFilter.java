@@ -24,7 +24,6 @@ import io.airlift.slice.Slices;
 import orestes.bloomfilter.FilterBuilder;
 import orestes.bloomfilter.HashProvider;
 import org.apache.commons.io.IOUtils;
-import org.eclipse.jetty.client.HttpClient;
 import org.eclipse.jetty.client.api.ContentResponse;
 
 import java.io.ByteArrayInputStream;
@@ -98,9 +97,11 @@ public class BloomFilter
     public static BloomFilter fromUrl(String url) throws Exception
     {
         log.info("Loading bloom filter from " + url);
-        HttpClient c = new HttpClient();
-        c.start(); // @todo singleton
-        ContentResponse resp = c.GET(url);
+        if (!BloomFilterScalarFunctions.HTTP_CLIENT.isStarted()) {
+            log.warn("Http client was not started, trying to start");
+            BloomFilterScalarFunctions.HTTP_CLIENT.start();
+        }
+        ContentResponse resp = BloomFilterScalarFunctions.HTTP_CLIENT.GET(url);
         byte[] bytes = resp.getContent();
         return newInstance(bytes);
     }

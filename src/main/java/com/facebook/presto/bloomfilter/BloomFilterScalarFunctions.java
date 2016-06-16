@@ -32,10 +32,23 @@ public final class BloomFilterScalarFunctions
 {
     private static final Cache<HashCode, BloomFilter> BF_CACHE = CacheBuilder.newBuilder().maximumSize(40).build();
     private static final Logger log = Logger.get(BloomFilterScalarFunctions.class);
+    public static final HttpClient HTTP_CLIENT = new HttpClient();
+
+    static {
+        try {
+            log.info("Http client starting");
+            HTTP_CLIENT.start();
+            log.info("Http client started");
+        }
+        catch (Exception e) {
+            log.warn("Failed to start http client", e);
+            e.printStackTrace();
+        }
+    }
 
     private BloomFilterScalarFunctions()
     {
-        log.warn("New scalar");
+        log.warn("New " + getClass().getSimpleName() + " should never be run");
     }
 
     @Nullable
@@ -64,14 +77,17 @@ public final class BloomFilterScalarFunctions
         BloomFilter bf = getOrLoadBloomFilter(bloomFilterSlice);
 
         // Persist
+        // we do not try catch here to make sure that errors are communicated clearly to the client
+        // and typical retry logic continues to work
         String url = new String(urlSlice.getBytes());
-        HttpClient c = new HttpClient();
-        c.start(); // @todo singleton
-        Request post = c.POST(url);
+        if (!HTTP_CLIENT.isStarted()) {
+            log.warn("Http client was not started, trying to start");
+            HTTP_CLIENT.start();
+        }
+        Request post = HTTP_CLIENT.POST(url);
         post.content(new StringContentProvider(new String(bf.toBase64())));
         post.method("PUT");
         post.send();
-
         log.info("Persisted " + bf.toString() + " " + url);
         return true;
     }
