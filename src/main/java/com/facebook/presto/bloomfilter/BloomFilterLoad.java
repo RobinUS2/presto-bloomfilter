@@ -33,6 +33,7 @@ public class BloomFilterLoad extends AbstractBloomFilterAggregation
             @SqlType(VARCHAR) Slice slice) throws Exception
     {
         BloomFilter bf = getOrCreateBloomFilter(state, BloomFilter.DEFAULT_BLOOM_FILTER_EXPECTED_INSERTIONS, BloomFilter.DEFAULT_BLOOM_FILTER_FALSE_POSITIVE_PERCENTAGE);
+        // Do not try catch because we want to have visibility for client errors
         bf.putAll(BloomFilter.fromUrl(new String(slice.getBytes())));
         state.setBloomFilter(bf);
     }
