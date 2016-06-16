@@ -89,6 +89,38 @@ Simply go into the folder `persist-service` and run the `./build.sh` script. Thi
 ### How to construct the url
 Let's say you are running the persist service on a host with as hostname `my-persist-service.internal` on port `8081`. You can then have a URL like this: `http://my-persist-service.internal:8081/bloomfilter/my-first-bf` where `my-first-bf` is the actual key under which it's stored/loaded.
 
+### Full example
+Step 1 - Loading the data
+```
+WITH input AS (SELECT 'one' AS val UNION SELECT 'two' AS val UNION SELECT 'three' AS val)
+SELECT bloom_filter_persist(bloom_filter(input.val), 'http://my-persist-service.internal:8081/bloomfilter/my-first-bf') FROM input;
+```
+yields
+```
+ _col0 
+-------
+ true  
+(1 row)
+```
+
+Step 2 - Using the bloom filter on your data
+```
+WITH input AS (SELECT 'one' AS val UNION SELECT 'two' AS val UNION SELECT 'three' AS val UNION SELECT 'four' AS val UNION SELECT 'five' AS val), 
+bf AS (SELECT bloom_filter_load('http://my-persist-service.internal:8081/bloomfilter/my-first-bf') AS bf) 
+SELECT val, bloom_filter_contains(bf.bf, input.val) FROM input, bf;
+```
+yields
+```
+  val  | _col1 
+-------+-------
+ three | true  
+ two   | true  
+ one   | true  
+ four  | false 
+ five  | false 
+(5 rows)
+```
+
 Bloom Filters
 -------------
 This project uses the [Bloom Filter](https://en.wikipedia.org/wiki/Bloom_filter) probabilistic data structure to keep track whether an element is part of a set.
