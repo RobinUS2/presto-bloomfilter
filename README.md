@@ -68,6 +68,27 @@ Will serialized (~ convert) a Bloom Filter with all it's settings to a string.
 
 This will load a previously serialized string back into a Bloom Filter object.
 
+Persistence
+-------------
+It might be the case that you can actually pre-compute your bloom filters and re-use them for a certain period to run your queries on. In order to support this we have included a very light weight, high performance http key-value store. 
+
+This simply allows you to persist the state of a bloom filter computed in presto to the service and load it back in another query. This reduces the population of the bloom filter from the full query time (seconds to minutes range) to neglible (very low milliseconds range).
+
+### Persistence functions
+`bloom_filter_load('<url:VARCHAR>')` -> BloomFilter
+
+This will load a bloom filter from the persistence service with a given key.
+
+`bloom_filter_persist(<BloomFilter>, '<url:VARCHAR>')` -> boolean
+
+This will persist a bloom filter to the persistence service with a given key.
+
+### How to run the service
+Simply go into the folder `persist-service` and run the `./build.sh` script. This should produce a binary with the name `persist-service`. Then create an configuration file in `/etc/prestobloomfilterpersist.json` with the contents `{}`. Once you then start the process it will start listening on port `8081`. 
+
+### How to construct the url
+Let's say you are running the persist service on a host with as hostname `my-persist-service.internal` on port `8081`. You can then have a URL like this: `http://my-persist-service.internal:8081/bloomfilter/my-first-bf` where `my-first-bf` is the actual key under which it's stored/loaded.
+
 Bloom Filters
 -------------
 This project uses the [Bloom Filter](https://en.wikipedia.org/wiki/Bloom_filter) probabilistic data structure to keep track whether an element is part of a set.
