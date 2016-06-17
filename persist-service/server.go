@@ -1,6 +1,8 @@
 package main
 
 import (
+	"bytes"
+	"compress/gzip"
 	"fmt"
 	"log"
 
@@ -29,11 +31,17 @@ func (s *Server) init() {
 		key := c.Param("key")
 		body := c.PostBody()
 
+		// Compress with gzip in body
+		var compressedBody bytes.Buffer
+		w := gzip.NewWriter(&compressedBody)
+		w.Write(body)
+		w.Close()
+
 		// Put
-		res, resErr := s.backend.Put([]byte(key), []byte(body))
+		res, resErr := s.backend.Put([]byte(key), compressedBody.Bytes())
 
 		// Log
-		log.Printf("PUT %v %v %v %v", key, body, res, resErr)
+		log.Printf("PUT %v %d %v %v", key, len(body), res, resErr)
 		return nil
 	})
 
@@ -45,11 +53,14 @@ func (s *Server) init() {
 		// Get
 		res, resErr := s.backend.Get([]byte(key))
 
-		// Log
-		log.Printf("GET %v %v %v", key, res, resErr)
+		// Headers, because we compressed it during the acceptance
+		c.Request.Header.Add("Content-Encoding", "gzip")
 
 		// Output
 		fmt.Fprintf(c, "%s", res)
+
+		// Log
+		log.Printf("GET %v %d %v", key, len(res), resErr)
 		return nil
 	})
 }
