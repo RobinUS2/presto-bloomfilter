@@ -25,13 +25,9 @@ import io.airlift.slice.Slices;
 import orestes.bloomfilter.FilterBuilder;
 import orestes.bloomfilter.HashProvider;
 import org.apache.commons.io.IOUtils;
-import org.eclipse.jetty.client.api.ContentResponse;
 import org.eclipse.jetty.client.api.Request;
 import org.eclipse.jetty.client.api.Response;
-import org.eclipse.jetty.client.api.Result;
-import org.eclipse.jetty.client.util.BufferingResponseListener;
 import org.eclipse.jetty.client.util.InputStreamResponseListener;
-import org.eclipse.jetty.client.util.StringContentProvider;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
@@ -120,11 +116,9 @@ public class BloomFilter
         Response response = listener.get(10, TimeUnit.SECONDS);
 
         // Look at the response
-        if (response.getStatus() == 200)
-        {
+        if (response.getStatus() == 200) {
             // Use try-with-resources to close input stream.
-            try (InputStream responseContent = listener.getInputStream())
-            {
+            try (InputStream responseContent = listener.getInputStream()) {
                 byte[] bytes = ByteStreams.toByteArray(responseContent);
                 return newInstance(bytes);
             }
