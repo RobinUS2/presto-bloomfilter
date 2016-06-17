@@ -16,6 +16,7 @@ package com.facebook.presto.bloomfilter;
 import com.google.common.annotations.VisibleForTesting;
 import com.google.common.hash.HashCode;
 import com.google.common.hash.Hashing;
+import com.google.common.io.ByteStreams;
 import io.airlift.log.Logger;
 import io.airlift.slice.BasicSliceInput;
 import io.airlift.slice.DynamicSliceOutput;
@@ -25,13 +26,21 @@ import orestes.bloomfilter.FilterBuilder;
 import orestes.bloomfilter.HashProvider;
 import org.apache.commons.io.IOUtils;
 import org.eclipse.jetty.client.api.ContentResponse;
+import org.eclipse.jetty.client.api.Request;
+import org.eclipse.jetty.client.api.Response;
+import org.eclipse.jetty.client.api.Result;
+import org.eclipse.jetty.client.util.BufferingResponseListener;
+import org.eclipse.jetty.client.util.InputStreamResponseListener;
+import org.eclipse.jetty.client.util.StringContentProvider;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutput;
 import java.io.ObjectOutputStream;
+import java.util.concurrent.TimeUnit;
 import java.util.zip.GZIPInputStream;
 import java.util.zip.GZIPOutputStream;
 
@@ -101,9 +110,26 @@ public class BloomFilter
             log.warn("Http client was not started, trying to start");
             BloomFilterScalarFunctions.HTTP_CLIENT.start();
         }
-        ContentResponse resp = BloomFilterScalarFunctions.HTTP_CLIENT.GET(url);
-        byte[] bytes = resp.getContent();
-        return newInstance(bytes);
+
+        Request get = BloomFilterScalarFunctions.HTTP_CLIENT.newRequest(url);
+        get.method("GET");
+        InputStreamResponseListener listener = new InputStreamResponseListener();
+        get.send(listener);
+
+        // Wait for the response headers to arrive
+        Response response = listener.get(10, TimeUnit.SECONDS);
+
+        // Look at the response
+        if (response.getStatus() == 200)
+        {
+            // Use try-with-resources to close input stream.
+            try (InputStream responseContent = listener.getInputStream())
+            {
+                byte[] bytes = ByteStreams.toByteArray(responseContent);
+                return newInstance(bytes);
+            }
+        }
+        return null;
     }
 
     public static BloomFilter newInstance(Slice serialized)

@@ -5,4 +5,4 @@ RUN wget https://storage.googleapis.com/golang/go1.6.2.linux-amd64.tar.gz && tar
 WORKDIR /usr/local
 RUN git clone https://github.com/RobinUS2/presto-bloomfilter.git
 RUN ./presto-bloomfilter/persist-service/build.sh
-CMD ["/usr/local/presto-bloomfilter/persist-service"]
+CMD ["/usr/local/presto-bloomfilter/persist-service/persist-service"]
