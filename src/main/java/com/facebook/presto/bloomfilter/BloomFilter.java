@@ -123,6 +123,7 @@ public class BloomFilter
                 return newInstance(bytes);
             }
         }
+        log.warn("Non-200 response status " + response.getStatus());
         return null;
     }
 

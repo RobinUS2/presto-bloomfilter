@@ -101,19 +101,20 @@ public class TestBloomFilterQueries
     {
         // Start local server
         int port = 8081;
-        Server server = new Server(8081);
+        Server server = new Server(port);
         Handler handler = new AbstractHandler()
         {
             @Override
             public void handle(String s, Request request, HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse) throws IOException, ServletException
             {
                 httpServletResponse.setContentType("text/html");
-                if (httpServletRequest.getRequestURI().contains("bloomfilter/key1")) {
+                if (httpServletRequest.getMethod().equalsIgnoreCase("GET") && httpServletRequest.getRequestURI().contains("bloomfilter/key1")) {
                     // Get
-                    httpServletResponse.getOutputStream().write(BloomFilter.newInstance().put(Slices.wrappedBuffer("robin".getBytes())).toBase64());
+                    byte[] bytes = BloomFilter.newInstance().put(Slices.wrappedBuffer("robin".getBytes())).toBase64();
                     httpServletResponse.setStatus(HttpServletResponse.SC_OK);
+                    httpServletResponse.getOutputStream().write(bytes);
                 }
-                else if (httpServletRequest.getMethod().equalsIgnoreCase("PUT")) {
+                else if (httpServletRequest.getMethod().equalsIgnoreCase("PUT") && httpServletRequest.getRequestURI().contains("bloomfilter/key1")) {
                     // Put
                     httpServletResponse.setStatus(HttpServletResponse.SC_OK);
                 }
