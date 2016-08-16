@@ -65,6 +65,19 @@ public class BloomFilter
 
     public static final double BF_MEM_CONSTANT = Math.log(1.0 / (Math.pow(2.0, Math.log(2.0))));
 
+    static
+    {
+        try {
+            if (!BloomFilterScalarFunctions.HTTP_CLIENT.isStarted()) {
+                log.warn("Http client was not started, trying to start");
+                BloomFilterScalarFunctions.HTTP_CLIENT.start();
+            }
+        }
+        catch (Exception ex) {
+            log.error("Error starting http client: " + ex.getMessage());
+        }
+    }
+
     public int getExpectedInsertions()
     {
         return expectedInsertions;
@@ -102,15 +115,11 @@ public class BloomFilter
     public static BloomFilter fromUrl(String url) throws Exception
     {
         log.info("Loading bloom filter from " + url);
-        if (!BloomFilterScalarFunctions.HTTP_CLIENT.isStarted()) {
-            log.warn("Http client was not started, trying to start");
-            BloomFilterScalarFunctions.HTTP_CLIENT.start();
-        }
 
-        Request get = BloomFilterScalarFunctions.HTTP_CLIENT.newRequest(url);
-        get.method("GET");
+        Request request = BloomFilterScalarFunctions.HTTP_CLIENT.newRequest(url);
+        request.method("GET");
         InputStreamResponseListener listener = new InputStreamResponseListener();
-        get.send(listener);
+        request.send(listener);
 
         // Wait for the response headers to arrive
         Response response = listener.get(10, TimeUnit.SECONDS);
