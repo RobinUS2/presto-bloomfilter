@@ -14,14 +14,10 @@
 package com.facebook.presto.bloomfilter;
 
 import com.facebook.presto.Session;
-import com.facebook.presto.metadata.FunctionFactory;
-import com.facebook.presto.spi.type.Type;
 import com.facebook.presto.testing.LocalQueryRunner;
 import com.facebook.presto.tests.AbstractTestQueryFramework;
 import com.facebook.presto.tpch.TpchConnectorFactory;
-import com.facebook.presto.type.ParametricType;
 import com.google.common.collect.ImmutableMap;
-import com.google.common.collect.Iterables;
 import io.airlift.slice.Slices;
 import org.eclipse.jetty.server.Handler;
 import org.eclipse.jetty.server.Request;
@@ -43,7 +39,7 @@ public class TestBloomFilterQueries
 {
     public TestBloomFilterQueries()
     {
-        super(createLocalQueryRunner());
+        super(createQueryRunner());
     }
 
     @Test
@@ -136,32 +132,31 @@ public class TestBloomFilterQueries
         server.stop();
     }
 
-    private static LocalQueryRunner createLocalQueryRunner()
+    private static LocalQueryRunner createQueryRunner()
     {
-        Session defaultSession = testSessionBuilder()
-                .setCatalog("local")
-                .setSchema(TINY_SCHEMA_NAME)
-                .build();
+        try {
+            Session defaultSession = testSessionBuilder()
+                    .setCatalog("local")
+                    .setSchema(TINY_SCHEMA_NAME)
+                    .build();
 
-        LocalQueryRunner localQueryRunner = new LocalQueryRunner(defaultSession);
+            LocalQueryRunner localQueryRunner = new LocalQueryRunner(defaultSession);
 
-        // add the tpch catalog
-        // local queries run directly against the generator
-        localQueryRunner.createCatalog(
-                defaultSession.getCatalog().get(),
-                new TpchConnectorFactory(localQueryRunner.getNodeManager(), 1),
-                ImmutableMap.<String, String>of());
+            // add the tpch catalog
+            // local queries run directly against the generator
+            localQueryRunner.createCatalog(
+                    defaultSession.getCatalog().get(),
+                    new TpchConnectorFactory(localQueryRunner.getNodeManager(), 1),
+                    ImmutableMap.<String, String>of());
 
-        BloomFilterPlugin plugin = new BloomFilterPlugin();
-        plugin.setTypeManager(localQueryRunner.getTypeManager());
-        for (Type type : plugin.getServices(Type.class)) {
-            localQueryRunner.getTypeManager().addType(type);
+            localQueryRunner.getTypeManager().addType(new BloomFilterType());
+            localQueryRunner.getTypeManager().addParametricType(new BloomFilterParametricType());
+            localQueryRunner.getMetadata().addFunctions(new BloomFilterFunctionFactory(localQueryRunner.getTypeManager()).listFunctions());
+
+            return localQueryRunner;
         }
-        for (ParametricType parametricType : plugin.getServices(ParametricType.class)) {
-            localQueryRunner.getTypeManager().addParametricType(parametricType);
+        catch (Exception e) {
+            throw new RuntimeException(e);
         }
-        localQueryRunner.getMetadata().getFunctionRegistry().addFunctions(Iterables.getOnlyElement(plugin.getServices(FunctionFactory.class)).listFunctions());
-
-        return localQueryRunner;
     }
 }

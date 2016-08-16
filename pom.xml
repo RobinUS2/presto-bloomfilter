@@ -7,11 +7,11 @@
     <parent><!-- do we need this -->
         <groupId>com.facebook.presto</groupId>
         <artifactId>presto-root</artifactId>
-        <version>0.147</version>
+        <version>0.151</version>
     </parent>
 
     <artifactId>presto-bloomfilter</artifactId>
-    <version>0.147</version>
+    <version>0.151</version>
     <packaging>presto-plugin</packaging>
 
     <properties>
@@ -89,7 +89,7 @@
         <dependency>
             <groupId>org.eclipse.jetty</groupId>
             <artifactId>jetty-client</artifactId>
-            <version>9.3.9.M1</version>
+            <version>9.3.11.M0</version>
         </dependency>
 
         <!-- for testing -->
@@ -103,6 +103,7 @@
             <groupId>org.eclipse.jetty</groupId>
             <artifactId>jetty-server</artifactId>
             <scope>test</scope>
+            <version>9.3.11.M0</version>
         </dependency>
 
         <dependency>

@@ -18,10 +18,9 @@ import com.facebook.presto.spi.block.Block;
 import com.facebook.presto.spi.block.BlockBuilder;
 import com.facebook.presto.spi.type.AbstractVariableWidthType;
 import com.facebook.presto.spi.type.SqlVarbinary;
+import com.facebook.presto.spi.type.TypeSignature;
 import com.fasterxml.jackson.annotation.JsonCreator;
 import io.airlift.slice.Slice;
-
-import static com.facebook.presto.type.TypeUtils.parameterizedTypeName;
 
 public class BloomFilterType extends AbstractVariableWidthType
 {
@@ -31,7 +30,7 @@ public class BloomFilterType extends AbstractVariableWidthType
     @JsonCreator
     public BloomFilterType()
     {
-        super(parameterizedTypeName(BloomFilterType.TYPE), Slice.class);
+        super(new TypeSignature(BloomFilterType.TYPE), Slice.class);
     }
 
     @Override
