@@ -33,8 +33,12 @@ public class BloomFilterFunctionFactory
     @Override
     public List<SqlFunction> listFunctions()
     {
-        return new FunctionListBuilder(typeManager)
-                .scalar(BloomFilterScalarFunctions.class)
+        return new FunctionListBuilder()
+                .scalar(BloomFilterContainsScalarFunction.class)
+                .scalar(BloomFilterPersistScalarFunction.class)
+                .scalar(BloomFilterToStringScalarFunction.class)
+                .scalar(BloomFilterGetExpectedInsertionsScalarFunction.class)
+                .scalar(BloomFilterGetFalsePositivePercentageScalarFunction.class)
                 .aggregate(BloomFilterAggregation.class)
                 .aggregate(BloomFilterFromString.class)
                 .aggregate(BloomFilterLoad.class)

@@ -50,6 +50,7 @@ import java.util.zip.GZIPOutputStream;
 //   bf: is the serialized bloom filter
 public class BloomFilter
 {
+    private static final HashCode HASH_CODE_NOT_FOUND = HashCode.fromInt(0);
     private orestes.bloomfilter.BloomFilter instancePreFilter;
     private orestes.bloomfilter.BloomFilter instance;
     private int expectedInsertions;
@@ -407,6 +408,9 @@ public class BloomFilter
 
     public static HashCode readHash(Slice s)
     {
+        if (s == null) {
+            return HASH_CODE_NOT_FOUND;
+        }
         return HashCode.fromBytes(s.getBytes(0, 32));
     }
 }
