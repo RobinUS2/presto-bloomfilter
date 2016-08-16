@@ -22,8 +22,6 @@ import com.facebook.presto.spi.type.TypeSignature;
 import com.fasterxml.jackson.annotation.JsonCreator;
 import io.airlift.slice.Slice;
 
-import javax.annotation.Nullable;
-
 public class BloomFilterType extends AbstractVariableWidthType
 {
     public static final BloomFilterType BLOOM_FILTER = new BloomFilterType();

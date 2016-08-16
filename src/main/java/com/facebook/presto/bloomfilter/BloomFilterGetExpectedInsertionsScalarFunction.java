@@ -32,7 +32,6 @@ public final class BloomFilterGetExpectedInsertionsScalarFunction
         log.warn("New " + getClass().getSimpleName() + " should never be run");
     }
 
-
     @Nullable
     @SqlType(StandardTypes.BIGINT)
     public static Long bloomFilterExpectedInsertions(@Nullable @SqlType(BloomFilterType.TYPE) Slice bloomFilterSlice)

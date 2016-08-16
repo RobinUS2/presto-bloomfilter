@@ -34,7 +34,6 @@ public final class BloomFilterPersistScalarFunction
         log.warn("New " + getClass().getSimpleName() + " should never be run");
     }
 
-
     @SqlType(StandardTypes.BOOLEAN)
     @Nullable
     public static Boolean bloomFilterPersist(@Nullable @SqlType(BloomFilterType.TYPE) Slice bloomFilterSlice, @SqlType(StandardTypes.VARCHAR) Slice urlSlice) throws Exception
