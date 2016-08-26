@@ -23,7 +23,8 @@ import javax.annotation.Nullable;
 
 @Description("Determines if this element is in the bloom filter")
 @Nullable
-@ScalarFunction("bloom_filter_contains") // For now I think the name Bloom Filter indicates the fact it is probabilistic. bloom_filter_might_contain would be an alternative but I think it's too verbose.
+@ScalarFunction(value = "bloom_filter_contains")
+// For now I think the name Bloom Filter indicates the fact it is probabilistic. bloom_filter_might_contain would be an alternative but I think it's too verbose.
 public final class BloomFilterContainsScalarFunction extends BloomFilterScalarFunctions
 {
     private BloomFilterContainsScalarFunction()

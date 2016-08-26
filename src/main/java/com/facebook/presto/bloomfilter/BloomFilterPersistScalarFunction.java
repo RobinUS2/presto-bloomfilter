@@ -23,9 +23,9 @@ import org.eclipse.jetty.client.util.StringContentProvider;
 
 import javax.annotation.Nullable;
 
-@Description("Persist a bloom filter to the persist service over HTTP")
+@Description(value = "Persist a bloom filter to the persist service over HTTP")
 @Nullable
-@ScalarFunction("bloom_filter_persist")
+@ScalarFunction(value = "bloom_filter_persist")
 public final class BloomFilterPersistScalarFunction
         extends BloomFilterScalarFunctions
 {

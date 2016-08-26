@@ -13,7 +13,6 @@
  */
 package com.facebook.presto.bloomfilter;
 
-import com.facebook.presto.metadata.SqlFunction;
 import com.facebook.presto.spi.Plugin;
 import com.facebook.presto.spi.type.ParametricType;
 import com.facebook.presto.spi.type.Type;
@@ -23,8 +22,6 @@ import com.google.common.collect.ImmutableSet;
 
 import javax.inject.Inject;
 
-import java.util.HashSet;
-import java.util.List;
 import java.util.Set;
 
 import static com.google.common.base.Preconditions.checkNotNull;
@@ -32,24 +29,26 @@ import static com.google.common.base.Preconditions.checkNotNull;
 public class BloomFilterPlugin
         implements Plugin
 {
-    private TypeManager typeManager;
 
     @Inject
     public void setTypeManager(TypeManager typeManager)
     {
-        this.typeManager = checkNotNull(typeManager, "typeManager is null");
+        checkNotNull(typeManager, "typeManager is null");
     }
 
     @Override
     public Set<Class<?>> getFunctions()
     {
-        Set<Class<?>> s = new HashSet<>();
-        List<SqlFunction> sqlFunctions = new BloomFilterFunctionFactory(typeManager).listFunctions();
-        for (SqlFunction f : sqlFunctions) {
-            s.add(f.getClass());
-        }
-        // To immutable
-        return ImmutableSet.copyOf(s);
+        return ImmutableSet.<Class<?>>builder()
+                .add(BloomFilterContainsScalarFunction.class)
+                .add(BloomFilterPersistScalarFunction.class)
+                .add(BloomFilterToStringScalarFunction.class)
+                .add(BloomFilterGetExpectedInsertionsScalarFunction.class)
+                .add(BloomFilterGetFalsePositivePercentageScalarFunction.class)
+                .add(BloomFilterAggregation.class)
+                .add(BloomFilterFromString.class)
+                .add(BloomFilterLoad.class)
+                .build();
     }
 
     @Override

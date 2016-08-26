@@ -21,9 +21,9 @@ import io.airlift.slice.Slice;
 
 import javax.annotation.Nullable;
 
-@Description("Display expected insertions from the bloom filter")
+@Description(value = "Display expected insertions from the bloom filter")
 @Nullable
-@ScalarFunction("get_false_positive_percentage")
+@ScalarFunction(value = "get_false_positive_percentage")
 public final class BloomFilterGetFalsePositivePercentageScalarFunction
         extends BloomFilterScalarFunctions
 {
@@ -32,7 +32,7 @@ public final class BloomFilterGetFalsePositivePercentageScalarFunction
         log.warn("New " + getClass().getSimpleName() + " should never be run");
     }
 
-    @Description("Display expected insertions from the bloom filter")
+    @Description(value = "Display expected insertions from the bloom filter")
     @Nullable
     @SqlType(StandardTypes.DOUBLE)
     public static Double bloomFilterFalsePositivePercentage(@Nullable @SqlType(BloomFilterType.TYPE) Slice bloomFilterSlice)

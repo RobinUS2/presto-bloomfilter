@@ -22,9 +22,9 @@ import io.airlift.slice.Slices;
 
 import javax.annotation.Nullable;
 
-@Description("Converts a bloom filter to a string representation")
+@Description(value = "Converts a bloom filter to a string representation")
 @Nullable
-@ScalarFunction("to_string")
+@ScalarFunction(value = "to_string")
 public final class BloomFilterToStringScalarFunction
         extends BloomFilterScalarFunctions
 {

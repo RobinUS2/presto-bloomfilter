@@ -23,7 +23,7 @@ import javax.annotation.Nullable;
 
 @Description("Display expected insertions from the bloom filter")
 @Nullable
-@ScalarFunction("get_expected_insertions")
+@ScalarFunction(value = "get_expected_insertions")
 public final class BloomFilterGetExpectedInsertionsScalarFunction
         extends BloomFilterScalarFunctions
 {
