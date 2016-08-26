@@ -13,10 +13,10 @@
  */
 package com.facebook.presto.bloomfilter;
 
-import com.facebook.presto.operator.aggregation.AggregationFunction;
-import com.facebook.presto.operator.aggregation.InputFunction;
+import com.facebook.presto.spi.function.AggregationFunction;
+import com.facebook.presto.spi.function.InputFunction;
+import com.facebook.presto.spi.function.SqlType;
 import com.facebook.presto.spi.type.StandardTypes;
-import com.facebook.presto.type.SqlType;
 import io.airlift.slice.Slice;
 
 import static com.facebook.presto.spi.type.StandardTypes.VARCHAR;

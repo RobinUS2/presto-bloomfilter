@@ -13,9 +13,9 @@
  */
 package com.facebook.presto.bloomfilter;
 
+import com.facebook.presto.array.ObjectBigArray;
 import com.facebook.presto.operator.aggregation.state.AbstractGroupedAccumulatorState;
-import com.facebook.presto.operator.aggregation.state.AccumulatorStateFactory;
-import com.facebook.presto.util.array.ObjectBigArray;
+import com.facebook.presto.spi.function.AccumulatorStateFactory;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 
