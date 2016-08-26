@@ -12,10 +12,9 @@
  * limitations under the License.
  */
 package com.facebook.presto.bloomfilter;
-
-import com.facebook.presto.operator.aggregation.CombineFunction;
-import com.facebook.presto.operator.aggregation.OutputFunction;
 import com.facebook.presto.spi.block.BlockBuilder;
+import com.facebook.presto.spi.function.CombineFunction;
+import com.facebook.presto.spi.function.OutputFunction;
 
 public class AbstractBloomFilterAggregation
 {

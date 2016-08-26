@@ -13,15 +13,19 @@
  */
 package com.facebook.presto.bloomfilter;
 
-import com.facebook.presto.metadata.FunctionFactory;
+import com.facebook.presto.metadata.SqlFunction;
 import com.facebook.presto.spi.Plugin;
+import com.facebook.presto.spi.type.ParametricType;
 import com.facebook.presto.spi.type.Type;
 import com.facebook.presto.spi.type.TypeManager;
-import com.facebook.presto.type.ParametricType;
 import com.google.common.collect.ImmutableList;
+import com.google.common.collect.ImmutableSet;
 
 import javax.inject.Inject;
+
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 
@@ -37,19 +41,26 @@ public class BloomFilterPlugin
     }
 
     @Override
-    public <T> List<T> getServices(Class<T> type)
+    public Set<Class<?>> getFunctions()
     {
-        if (type == FunctionFactory.class) {
-            // Register bloom filter functions
-            return ImmutableList.of(type.cast(new BloomFilterFunctionFactory(typeManager)));
+        Set<Class<?>> s = new HashSet<>();
+        List<SqlFunction> sqlFunctions = new BloomFilterFunctionFactory(typeManager).listFunctions();
+        for (SqlFunction f : sqlFunctions) {
+            s.add(f.getClass());
         }
-        else if (type == Type.class) {
-            // Register bloom filter type
-            return ImmutableList.of(type.cast(BloomFilterType.BLOOM_FILTER));
-        }
-        else if (type == ParametricType.class) {
-            return ImmutableList.of(type.cast(new BloomFilterParametricType()));
-        }
-        return ImmutableList.of();
+        // To immutable
+        return ImmutableSet.copyOf(s);
+    }
+
+    @Override
+    public Iterable<ParametricType> getParametricTypes()
+    {
+        return ImmutableList.of(new BloomFilterParametricType());
+    }
+
+    @Override
+    public Iterable<Type> getTypes()
+    {
+        return ImmutableList.of(BloomFilterType.BLOOM_FILTER);
     }
 }

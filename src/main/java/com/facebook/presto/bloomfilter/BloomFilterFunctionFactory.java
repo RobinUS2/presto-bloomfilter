@@ -13,7 +13,6 @@
  */
 package com.facebook.presto.bloomfilter;
 
-import com.facebook.presto.metadata.FunctionFactory;
 import com.facebook.presto.metadata.FunctionListBuilder;
 import com.facebook.presto.metadata.SqlFunction;
 import com.facebook.presto.spi.type.TypeManager;
@@ -21,7 +20,6 @@ import com.facebook.presto.spi.type.TypeManager;
 import java.util.List;
 
 public class BloomFilterFunctionFactory
-        implements FunctionFactory
 {
     private final TypeManager typeManager;
 
@@ -30,7 +28,6 @@ public class BloomFilterFunctionFactory
         this.typeManager = typeManager;
     }
 
-    @Override
     public List<SqlFunction> listFunctions()
     {
         return new FunctionListBuilder()
