@@ -19,6 +19,7 @@ import com.facebook.presto.spi.type.Type;
 import com.facebook.presto.spi.type.TypeManager;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableSet;
+import io.airlift.log.Logger;
 
 import javax.inject.Inject;
 
@@ -29,16 +30,19 @@ import static com.google.common.base.Preconditions.checkNotNull;
 public class BloomFilterPlugin
         implements Plugin
 {
+    private static final Logger log = Logger.get(BloomFilterPlugin.class);
 
     @Inject
     public void setTypeManager(TypeManager typeManager)
     {
         checkNotNull(typeManager, "typeManager is null");
+        log.info("Received type manager");
     }
 
     @Override
     public Set<Class<?>> getFunctions()
     {
+        log.info("Returning bloomfilter functions");
         return ImmutableSet.<Class<?>>builder()
                 .add(BloomFilterContainsScalarFunction.class)
                 .add(BloomFilterPersistScalarFunction.class)
@@ -54,12 +58,14 @@ public class BloomFilterPlugin
     @Override
     public Iterable<ParametricType> getParametricTypes()
     {
+        log.info("Returning bloomfilter parametric type");
         return ImmutableList.of(new BloomFilterParametricType());
     }
 
     @Override
     public Iterable<Type> getTypes()
     {
+        log.info("Returning bloomfilter type");
         return ImmutableList.of(BloomFilterType.BLOOM_FILTER);
     }
 }
