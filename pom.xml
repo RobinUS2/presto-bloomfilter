@@ -11,7 +11,7 @@
     </parent>
 
     <artifactId>presto-bloomfilter</artifactId>
-    <version>0.153</version>
+    <version>0.153-SNAPSHOT</version>
     <packaging>presto-plugin</packaging>
 
     <properties>
