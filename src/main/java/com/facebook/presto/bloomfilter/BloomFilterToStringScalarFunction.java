@@ -37,7 +37,7 @@ public final class BloomFilterToStringScalarFunction
     @Nullable
     @SqlNullable
     @SqlType(StandardTypes.VARCHAR)
-    public static Slice bloomFilterToString(@Nullable @SqlNullable @SqlType(BloomFilterType.TYPE) Slice bloomFilterSlice)
+    public static Slice bloomFilterToString(@SqlNullable @SqlType(BloomFilterType.TYPE) Slice bloomFilterSlice)
     {
         BloomFilter bf = getOrLoadBloomFilter(bloomFilterSlice);
         return Slices.wrappedBuffer(bf.toBase64());

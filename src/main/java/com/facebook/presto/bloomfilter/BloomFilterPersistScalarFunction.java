@@ -38,7 +38,7 @@ public final class BloomFilterPersistScalarFunction
     @SqlType(StandardTypes.BOOLEAN)
     @Nullable
     @SqlNullable
-    public static Boolean bloomFilterPersist(@Nullable @SqlNullable @SqlType(BloomFilterType.TYPE) Slice bloomFilterSlice, @SqlType(StandardTypes.VARCHAR) Slice urlSlice) throws Exception
+    public static Boolean bloomFilterPersist(@SqlNullable @SqlType(BloomFilterType.TYPE) Slice bloomFilterSlice, @SqlType(StandardTypes.VARCHAR) Slice urlSlice) throws Exception
     {
         // Nothing todo
         if (urlSlice == null) {

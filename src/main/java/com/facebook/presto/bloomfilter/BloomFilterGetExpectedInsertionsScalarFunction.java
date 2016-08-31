@@ -36,7 +36,7 @@ public final class BloomFilterGetExpectedInsertionsScalarFunction
     @SqlType(StandardTypes.BIGINT)
     @Nullable
     @SqlNullable
-    public static Long bloomFilterExpectedInsertions(@Nullable @SqlNullable @SqlType(BloomFilterType.TYPE) Slice bloomFilterSlice)
+    public static Long bloomFilterExpectedInsertions(@SqlNullable @SqlType(BloomFilterType.TYPE) Slice bloomFilterSlice)
     {
         BloomFilter bf = getOrLoadBloomFilter(bloomFilterSlice);
         return (long) bf.getExpectedInsertions();

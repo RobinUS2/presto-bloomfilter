@@ -37,7 +37,7 @@ public final class BloomFilterGetFalsePositivePercentageScalarFunction
     @Nullable
     @SqlNullable
     @SqlType(StandardTypes.DOUBLE)
-    public static Double bloomFilterFalsePositivePercentage(@Nullable @SqlNullable @SqlType(BloomFilterType.TYPE) Slice bloomFilterSlice)
+    public static Double bloomFilterFalsePositivePercentage(@SqlNullable @SqlType(BloomFilterType.TYPE) Slice bloomFilterSlice)
     {
         BloomFilter bf = getOrLoadBloomFilter(bloomFilterSlice);
         return bf.getFalsePositivePercentage();

@@ -20,10 +20,7 @@ import com.facebook.presto.spi.function.SqlType;
 import com.facebook.presto.spi.type.StandardTypes;
 import io.airlift.slice.Slice;
 
-import javax.annotation.Nullable;
-
 @Description("Determines if this element is in the bloom filter")
-@Nullable
 @ScalarFunction(value = "bloom_filter_contains")
 // For now I think the name Bloom Filter indicates the fact it is probabilistic. bloom_filter_might_contain would be an alternative but I think it's too verbose.
 public final class BloomFilterContainsScalarFunction extends BloomFilterScalarFunctions
@@ -34,9 +31,8 @@ public final class BloomFilterContainsScalarFunction extends BloomFilterScalarFu
     }
 
     @SqlType(StandardTypes.BOOLEAN)
-    @Nullable
     @SqlNullable
-    public static Boolean varcharBloomFilterContains(@Nullable @SqlNullable @SqlType(BloomFilterType.TYPE) Slice bloomFilterSlice, @Nullable @SqlNullable @SqlType(StandardTypes.VARCHAR) Slice slice)
+    public static Boolean varcharBloomFilterContains(@SqlNullable @SqlType(BloomFilterType.TYPE) Slice bloomFilterSlice, @SqlNullable @SqlType(StandardTypes.VARCHAR) Slice slice)
     {
         BloomFilter bf = getOrLoadBloomFilter(bloomFilterSlice);
         if (slice == null) {
