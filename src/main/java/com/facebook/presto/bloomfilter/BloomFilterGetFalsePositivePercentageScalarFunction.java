@@ -15,6 +15,7 @@ package com.facebook.presto.bloomfilter;
 
 import com.facebook.presto.spi.function.Description;
 import com.facebook.presto.spi.function.ScalarFunction;
+import com.facebook.presto.spi.function.SqlNullable;
 import com.facebook.presto.spi.function.SqlType;
 import com.facebook.presto.spi.type.StandardTypes;
 import io.airlift.slice.Slice;
@@ -34,8 +35,9 @@ public final class BloomFilterGetFalsePositivePercentageScalarFunction
 
     @Description(value = "Display expected insertions from the bloom filter")
     @Nullable
+    @SqlNullable
     @SqlType(StandardTypes.DOUBLE)
-    public static Double bloomFilterFalsePositivePercentage(@Nullable @SqlType(BloomFilterType.TYPE) Slice bloomFilterSlice)
+    public static Double bloomFilterFalsePositivePercentage(@Nullable @SqlNullable @SqlType(BloomFilterType.TYPE) Slice bloomFilterSlice)
     {
         BloomFilter bf = getOrLoadBloomFilter(bloomFilterSlice);
         return bf.getFalsePositivePercentage();

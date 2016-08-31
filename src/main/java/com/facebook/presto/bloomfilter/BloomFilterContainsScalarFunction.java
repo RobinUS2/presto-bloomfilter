@@ -15,6 +15,7 @@ package com.facebook.presto.bloomfilter;
 
 import com.facebook.presto.spi.function.Description;
 import com.facebook.presto.spi.function.ScalarFunction;
+import com.facebook.presto.spi.function.SqlNullable;
 import com.facebook.presto.spi.function.SqlType;
 import com.facebook.presto.spi.type.StandardTypes;
 import io.airlift.slice.Slice;
@@ -34,7 +35,8 @@ public final class BloomFilterContainsScalarFunction extends BloomFilterScalarFu
 
     @SqlType(StandardTypes.BOOLEAN)
     @Nullable
-    public static Boolean varcharBloomFilterContains(@Nullable @SqlType(BloomFilterType.TYPE) Slice bloomFilterSlice, @Nullable @SqlType(StandardTypes.VARCHAR) Slice slice)
+    @SqlNullable
+    public static Boolean varcharBloomFilterContains(@Nullable @SqlNullable @SqlType(BloomFilterType.TYPE) Slice bloomFilterSlice, @Nullable @SqlNullable @SqlType(StandardTypes.VARCHAR) Slice slice)
     {
         BloomFilter bf = getOrLoadBloomFilter(bloomFilterSlice);
         if (slice == null) {
