@@ -86,6 +86,31 @@ This will persist a bloom filter to the persistence service with a given key.
 ### How to run the service
 Simply go into the folder `persist-service` and run the `./build.sh` script. This should produce a binary with the name `persist-service`. Then create an configuration file in `/etc/prestobloomfilterpersist.json` with the contents `{}`. Once you then start the process it will start listening on port `8081`. 
 
+### Cassandra as backend
+Keyspace
+```
+CREATE KEYSPACE mykeyspace WITH replication = {'class': 'SimpleStrategy', 'replication_factor': '3'} AND durable_writes = true;
+```
+
+Table
+```
+CREATE TABLE mytable (key varchar PRIMARY KEY, value varchar);
+```
+
+Config
+```
+{
+    "Backend": "cassandra",
+    "Cassandra": {
+        "ProtoVersion": 3,
+        "Keyspace": "mykeyspace",
+        "Table": "mytable",
+        "Hosts": ["127.0.0.1"],
+        "Consistency": 4
+    }
+}
+```
+
 ### How to construct the url
 Let's say you are running the persist service on a host with as hostname `my-persist-service.internal` on port `8081`. You can then have a URL like this: `http://my-persist-service.internal:8081/bloomfilter/my-first-bf` where `my-first-bf` is the actual key under which it's stored/loaded.
 

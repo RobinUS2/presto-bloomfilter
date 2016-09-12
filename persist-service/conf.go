@@ -8,12 +8,15 @@ import (
 )
 
 type Conf struct {
+	Backend BackendType
 	ListenHost string
 	ListenPort int
+	Cassandra CassandraConf
 }
 
 func newConf(path string) *Conf {
 	c := &Conf{
+		Backend: BackendFile,
 		ListenPort: 8081, // default port
 	}
 	configBytes, configErr := ioutil.ReadFile(path)

@@ -1,5 +1,12 @@
 package main
 
+type BackendType string
+
+const (
+	BackendFile BackendType = "file"
+	BackendCassandra = "cassandra"
+)
+
 type IBackend interface {
 	// Put, key => value
 	Put([]byte, []byte) (bool, error)
@@ -9,5 +16,15 @@ type IBackend interface {
 }
 
 func newBackend(conf *Conf) IBackend {
-	return newFileBackend(conf)
+	var backend IBackend;
+	switch conf.Backend {
+	case BackendCassandra:
+		backend = newCassandraBackend(conf)
+		break
+	case BackendFile:
+	default:
+		backend = newFileBackend(conf)
+		break
+	}
+	return backend
 }
