@@ -20,7 +20,7 @@ type CassandraBackend struct {
 
 func (b CassandraBackend) Put(k []byte, v []byte) (bool, error) {
 	err := b.session.Query(fmt.Sprintf(`INSERT INTO %s (key, value) VALUES (?, ?)`, b.config.Table), k, v).Exec()
-	return true, err;
+	return err == nil, err;
 }
 
 func (b CassandraBackend) Get(k []byte) ([]byte, error) {
