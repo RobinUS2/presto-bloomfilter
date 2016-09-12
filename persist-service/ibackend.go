@@ -1,10 +1,10 @@
 package main
 
-type BackendType int
+type BackendType string
 
 const (
-	BackendFile BackendType = iota
-	BackendCassandra
+	BackendFile BackendType = "file"
+	BackendCassandra = "cassandra"
 )
 
 type IBackend interface {
