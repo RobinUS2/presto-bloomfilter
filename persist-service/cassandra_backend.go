@@ -3,6 +3,7 @@ package main
 import (
 	"github.com/gocql/gocql"
 	"fmt"
+	"log"
 )
 
 type CassandraConf struct {
@@ -35,7 +36,11 @@ func newCassandraBackend(conf *Conf) IBackend  {
 	cluster.Keyspace = conf.Cassandra.Keyspace
 	cluster.Consistency = conf.Cassandra.Consistency
 	cluster.ProtoVersion = conf.Cassandra.ProtoVersion
-	session, _ := cluster.CreateSession()
+
+	session, err := cluster.CreateSession()
+	if err != nil {
+		log.Fatal(err)
+	}
 
 	return CassandraBackend{
 		session: session,
