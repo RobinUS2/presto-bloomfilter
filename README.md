@@ -106,7 +106,7 @@ Config
         "Keyspace": "mykeyspace",
         "Table": "mytable",
         "Hosts": ["127.0.0.1"],
-        "Consistency": 4
+        "Consistency": "QUORUM"
     }
 }
 ```
