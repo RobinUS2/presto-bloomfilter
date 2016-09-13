@@ -11,7 +11,7 @@ type CassandraConf struct {
 	Keyspace string
 	Table string
 	Hosts []string
-	Consistency gocql.Consistency
+	Consistency string
 }
 
 type CassandraBackend struct {
@@ -34,7 +34,7 @@ func newCassandraBackend(conf *Conf) IBackend  {
 	// Connect to the cluster
 	cluster := gocql.NewCluster(conf.Cassandra.Hosts...)
 	cluster.Keyspace = conf.Cassandra.Keyspace
-	cluster.Consistency = conf.Cassandra.Consistency
+	cluster.Consistency = gocql.ParseConsistency(conf.Cassandra.Consistency)
 	cluster.ProtoVersion = conf.Cassandra.ProtoVersion
 
 	session, err := cluster.CreateSession()
