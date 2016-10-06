@@ -23,7 +23,7 @@ serviceUserHome="/home/$serviceUser" # home directory of the service user
 serviceLogFile="/var/log/$serviceNameLo.log" # log file for StdOut/StdErr
 maxShutdownTime=15 # maximum number of seconds to wait for the daemon to terminate normally
 pidFile="/var/run/$serviceNameLo.pid" # name of PID file (PID = process ID number)
-javaCommand="persist-service" # name of the Java launcher without the path
+javaCommand="bloomfilter-presist-service" # name of the Java launcher without the path
 javaExe="/usr/local/$javaCommand" # file name of the Java application launcher executable
 javaArgs="" # arguments for Java launcher
 javaCommandLine="$javaExe $javaArgs" # command line to start the Java service application
