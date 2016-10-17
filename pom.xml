@@ -147,6 +147,10 @@
             <name>bintray</name>
             <url>http://jcenter.bintray.com</url>
         </repository>
-    </repositories>
 
+        <repository>
+            <id>baqend</id>
+            <url>https://dl.bintray.com/baqend/maven/</url>
+        </repository>
+    </repositories>
 </project>
