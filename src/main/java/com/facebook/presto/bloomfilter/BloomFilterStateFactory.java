@@ -14,8 +14,8 @@
 package com.facebook.presto.bloomfilter;
 
 import com.facebook.presto.array.ObjectBigArray;
-import com.facebook.presto.operator.aggregation.state.AbstractGroupedAccumulatorState;
 import com.facebook.presto.spi.function.AccumulatorStateFactory;
+import com.facebook.presto.spi.function.GroupedAccumulatorState;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 
@@ -46,10 +46,10 @@ public class BloomFilterStateFactory implements AccumulatorStateFactory<BloomFil
     }
 
     public static class GroupedBloomFilterState
-            extends AbstractGroupedAccumulatorState
-            implements BloomFilterState
+            implements GroupedAccumulatorState, BloomFilterState
     {
         private final ObjectBigArray<BloomFilter> bfs = new ObjectBigArray<>();
+        private long groupId;
         private long size;
 
         @Override
@@ -59,16 +59,22 @@ public class BloomFilterStateFactory implements AccumulatorStateFactory<BloomFil
         }
 
         @Override
+        public void setGroupId(long groupId)
+        {
+            this.groupId = groupId;
+        }
+
+        @Override
         public BloomFilter getBloomFilter()
         {
-            return bfs.get(getGroupId());
+            return bfs.get(groupId);
         }
 
         @Override
         public void setBloomFilter(BloomFilter value)
         {
             checkNotNull(value, "value is null");
-            bfs.set(getGroupId(), value);
+            bfs.set(groupId, value);
         }
 
         @Override
