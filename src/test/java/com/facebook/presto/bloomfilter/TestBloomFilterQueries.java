@@ -31,6 +31,7 @@ import javax.servlet.http.HttpServletResponse;
 
 import java.io.IOException;
 
+import static com.facebook.presto.metadata.FunctionExtractor.extractFunctions;
 import static com.facebook.presto.testing.TestingSession.testSessionBuilder;
 import static com.facebook.presto.tpch.TpchMetadata.TINY_SCHEMA_NAME;
 
@@ -146,12 +147,12 @@ public class TestBloomFilterQueries
             // local queries run directly against the generator
             localQueryRunner.createCatalog(
                     defaultSession.getCatalog().get(),
-                    new TpchConnectorFactory(localQueryRunner.getNodeManager(), 1),
+                    new TpchConnectorFactory(1),
                     ImmutableMap.<String, String>of());
 
             localQueryRunner.getTypeManager().addType(new BloomFilterType());
             localQueryRunner.getTypeManager().addParametricType(new BloomFilterParametricType());
-            localQueryRunner.getMetadata().addFunctions(new BloomFilterFunctionFactory(localQueryRunner.getTypeManager()).listFunctions());
+            localQueryRunner.getMetadata().addFunctions(extractFunctions(new BloomFilterPlugin().getFunctions()));
 
             return localQueryRunner;
         }
