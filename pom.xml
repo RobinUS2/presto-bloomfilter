@@ -11,15 +11,19 @@
     </parent>
 
     <artifactId>presto-bloomfilter</artifactId>
-    <version>0.153-SNAPSHOT</version>
+    <version>0.153</version>
     <packaging>presto-plugin</packaging>
 
     <properties>
         <air.main.basedir>${project.basedir}</air.main.basedir>
-        <dep.jetty.version>9.3.9.M1</dep.jetty.version>
     </properties>
 
     <dependencies>
+        <dependency>
+            <groupId>com.facebook.presto</groupId>
+            <artifactId>presto-main</artifactId>
+        </dependency>
+
         <dependency>
             <groupId>javax.inject</groupId>
             <artifactId>javax.inject</artifactId>
@@ -61,7 +65,7 @@
         <dependency>
             <groupId>org.eclipse.jetty</groupId>
             <artifactId>jetty-client</artifactId>
-            <version>${dep.jetty.version}</version>
+            <version>9.3.9.M1</version>
         </dependency>
 
         <dependency>
@@ -69,31 +73,31 @@
             <artifactId>presto-array</artifactId>
         </dependency>
 
-        <!-- Presto SPI -->
+     <!-- Presto SPI -->
         <dependency>
             <groupId>com.facebook.presto</groupId>
             <artifactId>presto-spi</artifactId>
             <scope>provided</scope>
         </dependency>
-
+ 
         <dependency>
             <groupId>io.airlift</groupId>
             <artifactId>slice</artifactId>
             <scope>provided</scope>
         </dependency>
-
+ 
         <dependency>
             <groupId>io.airlift</groupId>
             <artifactId>units</artifactId>
             <scope>provided</scope>
         </dependency>
-
+ 
         <dependency>
             <groupId>org.openjdk.jol</groupId>
             <artifactId>jol-core</artifactId>
             <scope>provided</scope>
         </dependency>
-
+ 
         <dependency>
             <groupId>com.fasterxml.jackson.core</groupId>
             <artifactId>jackson-annotations</artifactId>
@@ -111,7 +115,7 @@
             <groupId>org.eclipse.jetty</groupId>
             <artifactId>jetty-server</artifactId>
             <scope>test</scope>
-            <version>${dep.jetty.version}</version>
+            <version>9.3.9.M1</version>
         </dependency>
 
         <dependency>
@@ -129,12 +133,6 @@
         <dependency>
             <groupId>com.facebook.presto</groupId>
             <artifactId>presto-tpch</artifactId>
-            <scope>test</scope>
-        </dependency>
-
-        <dependency>
-            <groupId>com.facebook.presto</groupId>
-            <artifactId>presto-main</artifactId>
             <scope>test</scope>
         </dependency>
 
@@ -165,10 +163,6 @@
             <name>bintray</name>
             <url>http://jcenter.bintray.com</url>
         </repository>
-
-        <repository>
-            <id>baqend</id>
-            <url>https://dl.bintray.com/baqend/maven/</url>
-        </repository>
     </repositories>
+
 </project>
