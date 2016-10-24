@@ -36,4 +36,16 @@ public class BloomFilterFromString extends AbstractBloomFilterAggregation
         bf.putAll(BloomFilter.newInstance(slice.getBytes()));
         state.setBloomFilter(bf);
     }
+
+    @InputFunction
+    public static void input(
+            BloomFilterState state,
+            @SqlType(VARCHAR) Slice slice,
+            @SqlType(StandardTypes.BIGINT) long expectedInsertions,
+            @SqlType(StandardTypes.DOUBLE) double falsePositivePercentage)
+    {
+        BloomFilter bf = getOrCreateBloomFilter(state, (int) expectedInsertions, falsePositivePercentage);
+        bf.putAll(BloomFilter.newInstance(slice.getBytes()));
+        state.setBloomFilter(bf);
+    }
 }

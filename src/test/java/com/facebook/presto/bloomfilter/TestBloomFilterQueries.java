@@ -90,6 +90,9 @@ public class TestBloomFilterQueries
 
         // Test construction
         assertQuery("WITH a AS (SELECT 'robin' AS uuid), b AS (SELECT bloom_filter(a.uuid) AS bf FROM a), c AS (SELECT to_string(b.bf) AS j FROM b), d AS (SELECT bloom_filter_from_string(c.j) AS bf2 FROM c) SELECT bloom_filter_contains(d.bf2, 'robin'), bloom_filter_contains(d.bf2, 'john') FROM d", "SELECT true, false");
+
+        // Test construction from string with precision
+        assertQuery("WITH a AS (SELECT 'robin' AS uuid), b AS (SELECT bloom_filter(a.uuid, 10, 0.05) AS bf FROM a), c AS (SELECT to_string(b.bf) AS j FROM b), d AS (SELECT bloom_filter_from_string(c.j, 10, 0.05) AS bf2 FROM c) SELECT bloom_filter_contains(d.bf2, 'robin'), bloom_filter_contains(d.bf2, 'john') FROM d", "SELECT true, false");
     }
 
     @Test
