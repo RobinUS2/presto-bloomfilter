@@ -14,7 +14,10 @@ echo "Presto version $PRESTO_VERSION"
 cd ~
 wget https://repo1.maven.org/maven2/com/facebook/presto/presto-server/$PRESTO_VERSION/presto-server-$PRESTO_VERSION.tar.gz
 tar -zxvf presto-server-$PRESTO_VERSION.tar.gz
-ls -lah presto-server*
+PRESTO_FOLDER=presto-server-$PRESTO_VERSION
+echo "Entering $PRESTO_FOLDER"
+cd $PRESTO_FOLDER
+ls -lah
 
 # Presto conf node
 echo 'node.environment=production
