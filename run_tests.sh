@@ -55,6 +55,8 @@ echo 'connector.name=tpch' > etc/catalog/tpch.properties
 # Move bloomfilter to plugin
 cp ~/.m2/repository/com/facebook/presto/presto-bloomfilter/$PRESTO_VERSION/presto-bloomfilter-$PRESTO_VERSION.zip plugin/
 unzip plugin/presto-bloomfilter-$PRESTO_VERSION.zip
+ls -lah
+ls -lah plugin/
 rm plugin/*.zip
 ls -lah plugin/
 
@@ -76,4 +78,4 @@ chmod +x $CLI
 
 # Wait a bit more
 sleep 10
-./$CLI --server http://localhost:8080 --catalog tpch --schema tiny --execute 'select * from nation'
+./$CLI --server http://localhost:8080 --catalog tpch --schema tiny --execute 'select bloom_filter(name) as bf from nation'
