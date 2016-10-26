@@ -5,6 +5,11 @@ dist: trusty
 jdk:
   - oraclejdk8
 
+addons:
+  apt:
+    packages:
+      - oracle-java8-installer
+
 sudo: required
 
 cache:
@@ -24,4 +29,4 @@ install:
 
 build: ./mvnw clean install
 
-script: sudo apt-get update -y && sudo apt-get install oracle-java8-installer -y && java -version && ./run_tests.sh
+script: java -version && ./run_tests.sh
