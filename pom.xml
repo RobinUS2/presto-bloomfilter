@@ -156,14 +156,10 @@
     </dependencyManagement>
 
     <repositories>
-   <repository>
-       <snapshots>
-        <enabled>false</enabled>
-       </snapshots>
-       <id>central</id>
-       <name>bintray</name>
-       <url>http://jcenter.bintray.com</url>
-   </repository>
+  <repository>
+    <id>spring-milestones</id>
+    <url>http://repo.spring.io/libs-milestone/</url>
+  </repository>
     </repositories>
 
 </project>
