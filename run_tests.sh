@@ -73,5 +73,5 @@ cd ~
 wget https://repo1.maven.org/maven2/com/facebook/presto/presto-cli/$PRESTO_VERSION/presto-cli-$PRESTO_VERSION-executable.jar
 CLI=presto-cli-$PRESTO_VERSION-executable.jar
 chmod +x $CLI
-./$CLI --server http://localhost:8080 --catalog tpch --help
+./$CLI --server http://localhost:8080 --catalog tpch --schema tiny --execute 'select * from nation'
 
