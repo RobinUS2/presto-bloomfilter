@@ -159,3 +159,5 @@ As this is a Presto plugin it relies on presto-spi. This means you will have to 
 /code/presto-bloomfilter  
 
 Then run `mvn clean install` in /code/presto. Once that has finished run `mvn clean install` in /code/presto-bloomfilter.
+
+This will provide a .zip file in the target/ folder which you can unpack and then copy into the presto server plugin/ folder.
