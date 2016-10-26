@@ -48,6 +48,10 @@ discovery.uri=http://example.net:8080' > etc/config.properties
 # Logging
 echo 'com.facebook.presto=DEBUG' > etc/log.properties
 
+# TPCH connector
+mkdir etc/catalog
+echo 'connector.name=tpch' > etc/catalog/tpch.properties
+
 # Move bloomfilter to plugin
 cp ~/.m2/repository/com/facebook/presto/presto-bloomfilter/$PRESTO_VERSION/presto-bloomfilter-$PRESTO_VERSION.zip plugin/
 unzip plugin/presto-bloomfilter-$PRESTO_VERSION.zip
@@ -63,3 +67,11 @@ sleep 10
 # Started?
 bin/launcher status
 ps aux | grep presto
+
+# Cli
+cd ~ 
+wget https://repo1.maven.org/maven2/com/facebook/presto/presto-cli/$PRESTO_VERSION/presto-cli-$PRESTO_VERSION-executable.jar
+CLI=presto-cli-$PRESTO_VERSION-executable.jar
+chmod +x $CLI
+$CLI --server http://localhost:8080 --catalog tpch --help
+
