@@ -17,6 +17,7 @@ tar -zxvf presto-server-$PRESTO_VERSION.tar.gz
 PRESTO_FOLDER=presto-server-$PRESTO_VERSION
 echo "Entering $PRESTO_FOLDER"
 cd $PRESTO_FOLDER
+mkdir etc
 ls -lah
 
 # Presto conf node
