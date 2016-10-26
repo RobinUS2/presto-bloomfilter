@@ -47,6 +47,12 @@ discovery.uri=http://example.net:8080' > etc/config.properties
 # Logging
 echo 'com.facebook.presto=DEBUG' > etc/log.properties
 
+# Move bloomfilter to plugin
+cp ~/.m2/repository/com/facebook/presto/presto-bloomfilter/$PRESTO_VERSION/presto-bloomfilter-$PRESTO_VERSION.zip plugin/
+unzip plugin/presto-bloomfilter-$PRESTO_VERSION.zip
+rm plugin/*.zip
+ls -lah plugin/
+
 # Start presto
 bin/launcher start
 
