@@ -24,4 +24,4 @@ install:
 
 build: ./mvnw clean install
 
-script: sudo apt-get update && sudo apt-get install oracle-java8-installer && java -version && ./run_tests.sh
+script: sudo apt-get update -y && sudo apt-get install oracle-java8-installer -y && java -version && ./run_tests.sh
