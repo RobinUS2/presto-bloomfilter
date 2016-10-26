@@ -21,9 +21,10 @@ mkdir etc
 ls -lah
 
 # Presto conf node
+mkdir -p /tmp/presto/data
 echo 'node.environment=production
 node.id=ffffffff-ffff-ffff-ffff-ffffffffffff
-node.data-dir=/var/presto/data' > etc/node.properties
+node.data-dir=/tmp/presto/data' > etc/node.properties
 
 # Presto conf jvm
 echo '-server
