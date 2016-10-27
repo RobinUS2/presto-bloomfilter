@@ -68,6 +68,12 @@ sleep 1
 bin/launcher status
 ps aux | grep presto
 
+# Cli
+cd ~
+wget https://repo1.maven.org/maven2/com/facebook/presto/presto-cli/$PRESTO_VERSION/presto-cli-$PRESTO_VERSION-executable.jar
+CLI=presto-cli-$PRESTO_VERSION-executable.jar
+chmod +x $CLI
+
 # Wait until startup
 i="0"
 while [ $i -lt 60 ]
@@ -75,8 +81,12 @@ do
 	# Started?
 	LINES_MATCHED=`cat /tmp/presto/data/var/log/server.log | grep -i 'server started' | wc -l`
 	if [ "$LINES_MATCHED" -eq "1" ]; then 
-		echo "Server started"
-		break
+		# Check if queries run
+		QUERY_LINES_MATCHED=`./$CLI --server http://localhost:8080 --catalog tpch --execute 'show schemas' | grep -i default | wc -l`
+		if [ "$QUERY_LINES_MATCHED" -eq "1" ]; then
+			echo "Server started"
+			break
+		fi
 	fi
 
 	# Not started, wait
@@ -84,12 +94,6 @@ do
 	i=$[$i+1]
 done
 tail -n 500 /tmp/presto/data/var/log/server.log
-
-# Cli
-cd ~ 
-wget https://repo1.maven.org/maven2/com/facebook/presto/presto-cli/$PRESTO_VERSION/presto-cli-$PRESTO_VERSION-executable.jar
-CLI=presto-cli-$PRESTO_VERSION-executable.jar
-chmod +x $CLI
 
 # Wait a bit more
 RES=`./$CLI --server http://localhost:8080 --catalog tpch --schema tiny --execute 'WITH input AS (SELECT DISTINCT name FROM nation LIMIT 3), a AS (SELECT bloom_filter(name) AS bf FROM input LIMIT 3) SELECT count(1) FROM nation, a WHERE bloom_filter_contains(a.bf, nation.name)' --output-format TSV`
