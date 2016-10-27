@@ -22,7 +22,6 @@ func newBackend(conf *Conf) IBackend {
 		backend = newCassandraBackend(conf)
 		break
 	case BackendFile:
-	default:
 		backend = newFileBackend(conf)
 		break
 	}
