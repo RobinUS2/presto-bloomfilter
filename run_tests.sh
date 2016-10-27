@@ -63,12 +63,27 @@ cd ..
 # Start presto
 bin/launcher start
 
-# Wait
-sleep 10
-
-# Started?
+# Short wait
+sleep 1
 bin/launcher status
 ps aux | grep presto
+
+# Wait until startup
+i="0"
+while [ $i -lt 60 ]
+do
+	# Started?
+	LINES_MATCHED=`cat /tmp/presto/data/var/log/server.log | grep -i 'server started' | wc -l`
+	if [ "$LINES_MATCHED" -eq "1" ]; then 
+		echo "Server started"
+		break
+	fi
+
+	# Not started, wait
+	sleep 1
+	i=$[$i+1]
+done
+tail -n 500 /tmp/presto/data/var/log/server.log
 
 # Cli
 cd ~ 
@@ -77,7 +92,6 @@ CLI=presto-cli-$PRESTO_VERSION-executable.jar
 chmod +x $CLI
 
 # Wait a bit more
-sleep 10
 RES=`./$CLI --server http://localhost:8080 --catalog tpch --schema tiny --execute 'WITH input AS (SELECT DISTINCT name FROM nation LIMIT 3), a AS (SELECT bloom_filter(name) AS bf FROM input LIMIT 3) SELECT count(1) FROM nation, a WHERE bloom_filter_contains(a.bf, nation.name)' --output-format TSV`
 echo $RES
 if [ "$RES" == "3" ]; then
