@@ -107,7 +107,7 @@ function doquery {
 	QUERY=$1
 	EXPECTED=$2
 	NAME=$3
-	RES=`./$CLI --server http://localhost:8080 --catalog tpch --schema tiny --execute '$QUERY' --output-format TSV`
+	RES=`./$CLI --server http://localhost:8080 --catalog tpch --schema tiny --execute "$QUERY" --output-format TSV`
 	echo $RES
 	if [ "$RES" == "$EXPECTED" ]; then
         	echo "Test passed: $NAME"
