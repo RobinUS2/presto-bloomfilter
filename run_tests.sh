@@ -101,11 +101,19 @@ done
 tail -n 500 /tmp/presto/data/var/log/server.log
 
 # Wait a bit more
-RES=`./$CLI --server http://localhost:8080 --catalog tpch --schema tiny --execute 'WITH input AS (SELECT DISTINCT name FROM nation LIMIT 3), a AS (SELECT bloom_filter(name) AS bf FROM input LIMIT 3) SELECT count(1) FROM nation, a WHERE bloom_filter_contains(a.bf, nation.name)' --output-format TSV`
-echo $RES
-if [ "$RES" == "3" ]; then
-	echo "Test passed"
-else
-	echo "Test ERROR"
-	exit 1
-fi
+function doquery {
+	QUERY=$1
+	EXPECTED=$2
+	NAME=$3
+	RES=`./$CLI --server http://localhost:8080 --catalog tpch --schema tiny --execute '$QUERY' --output-format TSV`
+	echo $RES
+	if [ "$RES" == "$EXPECTED" ]; then
+        	echo "Test passed: $NAME"
+	else
+        	echo "Test ERROR: $NAME"
+	        exit 1
+	fi
+}
+
+# Tests
+doquery "WITH input AS (SELECT DISTINCT name FROM nation LIMIT 3), a AS (SELECT bloom_filter(name) AS bf FROM input LIMIT 3) SELECT count(1) FROM nation, a WHERE bloom_filter_contains(a.bf, nation.name)" "3" "Simple bloom filter contains"
