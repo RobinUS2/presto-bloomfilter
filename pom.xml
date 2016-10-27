@@ -54,7 +54,7 @@
         <dependency>
             <groupId>com.baqend</groupId>
             <artifactId>bloom-filter</artifactId>
-            <version>1.0.7</version>
+            <version>1.0.8</version>
         </dependency>
 
         <dependency>
@@ -156,14 +156,10 @@
     </dependencyManagement>
 
     <repositories>
-        <repository>
-            <snapshots>
-                <enabled>false</enabled>
-            </snapshots>
-            <id>central</id>
-            <name>bintray</name>
-            <url>http://jcenter.bintray.com</url>
-        </repository>
+  <repository>
+    <id>spring-milestones</id>
+    <url>http://repo.spring.io/libs-milestone/</url>
+  </repository>
     </repositories>
 
 </project>
