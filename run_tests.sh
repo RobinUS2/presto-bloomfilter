@@ -10,6 +10,11 @@ echo "Installing plugin"
 PRESTO_VERSION=`cat pom.xml | grep '<version>' | head -n 1 | cut -f2 -d">"|cut -f1 -d"<"`
 echo "Presto version $PRESTO_VERSION"
 
+# Install persist service
+cd persist-service
+./build.sh
+./persist-service &
+
 # Download presto
 cd ~
 wget https://repo1.maven.org/maven2/com/facebook/presto/presto-server/$PRESTO_VERSION/presto-server-$PRESTO_VERSION.tar.gz
