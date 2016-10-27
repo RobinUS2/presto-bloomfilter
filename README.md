@@ -1,4 +1,4 @@
-# presto-bloomfilter ![Build status](https://api.travis-ci.org/RobinUS2/presto-bloomfilter.svg)
+# presto-bloomfilter [![Build status](https://api.travis-ci.org/RobinUS2/presto-bloomfilter.svg)](https://travis-ci.org/RobinUS2/presto-bloomfilter)
 Bloomfilter support for Facebook Presto (prestodb.io) 
 
 Use cases & Examples
