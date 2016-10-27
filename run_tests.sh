@@ -13,6 +13,7 @@ echo "Presto version $PRESTO_VERSION"
 # Install persist service
 cd persist-service
 ./build.sh
+echo '{}' > /etc/prestobloomfilterpersist.json
 ./persist-service &
 ps aux | grep persist
 curl -vvv http://localhost:8081/
