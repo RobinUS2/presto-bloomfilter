@@ -1,0 +1,32 @@
+language: java
+
+dist: trusty
+
+jdk:
+  - oraclejdk8
+
+addons:
+  apt:
+    packages:
+      - oracle-java8-installer
+
+sudo: required
+
+cache:
+  directories:
+    - $HOME/.m2/repository
+
+before_cache:
+  # Make the cache stable between builds by removing build output
+  - rm -rf $HOME/.m2/repository/com/facebook
+
+before_install:
+  # This is needed until Travis #4629 is fixed (https://github.com/travis-ci/travis-ci/issues/4629)
+  - sed -i.bak -e 's|https://nexus.codehaus.org/snapshots/|https://oss.sonatype.org/content/repositories/codehaus-snapshots/|g' ~/.m2/settings.xml
+
+install:
+  - mvn -N io.takari:maven:wrapper
+
+build: ./mvnw clean install
+
+script: java -version && ./run_tests.sh

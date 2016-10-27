@@ -15,6 +15,7 @@ package com.facebook.presto.bloomfilter;
 
 import com.facebook.presto.spi.function.Description;
 import com.facebook.presto.spi.function.ScalarFunction;
+import com.facebook.presto.spi.function.SqlNullable;
 import com.facebook.presto.spi.function.SqlType;
 import com.facebook.presto.spi.type.StandardTypes;
 import io.airlift.slice.Slice;
@@ -32,9 +33,10 @@ public final class BloomFilterGetExpectedInsertionsScalarFunction
         log.warn("New " + getClass().getSimpleName() + " should never be run");
     }
 
-    @Nullable
     @SqlType(StandardTypes.BIGINT)
-    public static Long bloomFilterExpectedInsertions(@Nullable @SqlType(BloomFilterType.TYPE) Slice bloomFilterSlice)
+    @Nullable
+    @SqlNullable
+    public static Long bloomFilterExpectedInsertions(@SqlNullable @SqlType(BloomFilterType.TYPE) Slice bloomFilterSlice)
     {
         BloomFilter bf = getOrLoadBloomFilter(bloomFilterSlice);
         return (long) bf.getExpectedInsertions();
