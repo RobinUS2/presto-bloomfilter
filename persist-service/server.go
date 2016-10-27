@@ -19,6 +19,9 @@ type Server struct {
 func (s *Server) init() {
 	// Backend
 	s.backend = newBackend(s.conf)
+	if s.backend == nil {
+		log.Fatal("Backend not initiated")
+	}
 
 	// Router
 	s.router = routing.New()

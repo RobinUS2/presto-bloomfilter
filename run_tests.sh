@@ -10,6 +10,14 @@ echo "Installing plugin"
 PRESTO_VERSION=`cat pom.xml | grep '<version>' | head -n 1 | cut -f2 -d">"|cut -f1 -d"<"`
 echo "Presto version $PRESTO_VERSION"
 
+# Install persist service
+cd persist-service
+./build.sh
+echo '{}' > prestobloomfilterpersist.json
+./persist-service --conf=prestobloomfilterpersist.json &
+ps aux | grep persist
+curl -vvv http://localhost:8081/
+
 # Download presto
 cd ~
 wget https://repo1.maven.org/maven2/com/facebook/presto/presto-server/$PRESTO_VERSION/presto-server-$PRESTO_VERSION.tar.gz
@@ -96,11 +104,22 @@ done
 tail -n 500 /tmp/presto/data/var/log/server.log
 
 # Wait a bit more
-RES=`./$CLI --server http://localhost:8080 --catalog tpch --schema tiny --execute 'WITH input AS (SELECT DISTINCT name FROM nation LIMIT 3), a AS (SELECT bloom_filter(name) AS bf FROM input LIMIT 3) SELECT count(1) FROM nation, a WHERE bloom_filter_contains(a.bf, nation.name)' --output-format TSV`
-echo $RES
-if [ "$RES" == "3" ]; then
-	echo "Test passed"
-else
-	echo "Test ERROR"
-	exit 1
-fi
+function doquery {
+	QUERY=$1
+	EXPECTED=$2
+	NAME=$3
+	echo "Running $QUERY"
+	RES=`./$CLI --server http://localhost:8080 --catalog tpch --schema tiny --execute "$QUERY" --output-format TSV`
+	echo $RES
+	if [ "$RES" == "$EXPECTED" ]; then
+        	echo "Test passed: $NAME"
+	else
+        	echo "Test ERROR: $NAME"
+	        exit 1
+	fi
+}
+
+# Tests
+doquery "WITH input AS (SELECT DISTINCT name FROM nation LIMIT 3), a AS (SELECT bloom_filter(name) AS bf FROM input LIMIT 3) SELECT count(1) FROM nation, a WHERE bloom_filter_contains(a.bf, nation.name)" "3" "Simple bloom filter contains"
+doquery "WITH input AS (SELECT DISTINCT name FROM nation LIMIT 3) SELECT bloom_filter_persist(bloom_filter(name), 'http://localhost:8081/bloomfilter/my-first-bf') AS persisted FROM input" "true" "Simple bloom filter persist"
+doquery "WITH a AS (SELECT bloom_filter_load('http://localhost:8081/bloomfilter/my-first-bf') AS bf) SELECT count(1) FROM nation, a WHERE bloom_filter_contains(a.bf, nation.name)" "3" "Bloom filter contains from persist"
