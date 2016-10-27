@@ -54,11 +54,11 @@ echo 'connector.name=tpch' > etc/catalog/tpch.properties
 
 # Move bloomfilter to plugin
 cp ~/.m2/repository/com/facebook/presto/presto-bloomfilter/$PRESTO_VERSION/presto-bloomfilter-$PRESTO_VERSION.zip plugin/
-unzip plugin/presto-bloomfilter-$PRESTO_VERSION.zip
-ls -lah
-ls -lah plugin/
-rm plugin/*.zip
-ls -lah plugin/
+cd plugin
+unzip presto-bloomfilter-$PRESTO_VERSION.zip
+ls -lah 
+rm *.zip
+cd ..
 
 # Start presto
 bin/launcher start
