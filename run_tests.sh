@@ -119,4 +119,4 @@ function doquery {
 
 # Tests
 doquery "WITH input AS (SELECT DISTINCT name FROM nation LIMIT 3), a AS (SELECT bloom_filter(name) AS bf FROM input LIMIT 3) SELECT count(1) FROM nation, a WHERE bloom_filter_contains(a.bf, nation.name)" "3" "Simple bloom filter contains"
-doquery "WITH input AS (SELECT DISTINCT name FROM nation LIMIT 3), SELECT bloom_filter_persist(bloom_filter(name), 'http://localhost:8081/bloomfilter/my-first-bf') AS persisted FROM input" "true" "Simple bloom filter persist"
+doquery "WITH input AS (SELECT DISTINCT name FROM nation LIMIT 3) SELECT bloom_filter_persist(bloom_filter(name), 'http://localhost:8081/bloomfilter/my-first-bf') AS persisted FROM input" "true" "Simple bloom filter persist"
