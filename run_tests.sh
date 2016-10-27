@@ -78,4 +78,5 @@ chmod +x $CLI
 
 # Wait a bit more
 sleep 10
-./$CLI --server http://localhost:8080 --catalog tpch --schema tiny --execute 'WITH input AS (SELECT DISTINCT name FROM nation LIMIT 3), a AS (SELECT bloom_filter(name) AS bf FROM input LIMIT 3) SELECT count(1) FROM nation, a WHERE bloom_filter_contains(a.bf, nation.name)'
+RES=`./$CLI --server http://localhost:8080 --catalog tpch --schema tiny --execute 'WITH input AS (SELECT DISTINCT name FROM nation LIMIT 3), a AS (SELECT bloom_filter(name) AS bf FROM input LIMIT 3) SELECT count(1) FROM nation, a WHERE bloom_filter_contains(a.bf, nation.name)' --output-format TSV`
+echo $RES
