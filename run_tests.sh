@@ -107,6 +107,7 @@ function doquery {
 	QUERY=$1
 	EXPECTED=$2
 	NAME=$3
+	echo "Running $QUERY"
 	RES=`./$CLI --server http://localhost:8080 --catalog tpch --schema tiny --execute "$QUERY" --output-format TSV`
 	echo $RES
 	if [ "$RES" == "$EXPECTED" ]; then
@@ -120,3 +121,4 @@ function doquery {
 # Tests
 doquery "WITH input AS (SELECT DISTINCT name FROM nation LIMIT 3), a AS (SELECT bloom_filter(name) AS bf FROM input LIMIT 3) SELECT count(1) FROM nation, a WHERE bloom_filter_contains(a.bf, nation.name)" "3" "Simple bloom filter contains"
 doquery "WITH input AS (SELECT DISTINCT name FROM nation LIMIT 3) SELECT bloom_filter_persist(bloom_filter(name), 'http://localhost:8081/bloomfilter/my-first-bf') AS persisted FROM input" "true" "Simple bloom filter persist"
+doquery "WITH a AS (SELECT bloom_filter_load('http://localhost:8081/bloomfilter/my-first-bf') AS bf) SELECT count(1) FROM nation, a WHERE bloom_filter_contains(a.bf, nation.name)" "3" "Bloom filter contains from persist"
