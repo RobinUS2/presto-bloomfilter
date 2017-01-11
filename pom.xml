@@ -7,11 +7,11 @@
     <parent><!-- do we need this -->
         <groupId>com.facebook.presto</groupId>
         <artifactId>presto-root</artifactId>
-        <version>0.161</version>
+        <version>0.162</version>
     </parent>
 
     <artifactId>presto-bloomfilter</artifactId>
-    <version>0.161</version>
+    <version>0.162</version>
     <packaging>presto-plugin</packaging>
 
     <properties>
