@@ -23,9 +23,8 @@ import io.airlift.log.Logger;
 
 import javax.inject.Inject;
 
+import java.util.Objects;
 import java.util.Set;
-
-import static com.google.common.base.Preconditions.checkNotNull;
 
 public class BloomFilterPlugin
         implements Plugin
@@ -35,7 +34,7 @@ public class BloomFilterPlugin
     @Inject
     public void setTypeManager(TypeManager typeManager)
     {
-        checkNotNull(typeManager, "typeManager is null");
+        Objects.requireNonNull(typeManager, "typeManager is null");
         log.info("Received type manager");
     }
 
