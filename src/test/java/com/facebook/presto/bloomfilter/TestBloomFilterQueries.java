@@ -15,7 +15,9 @@ package com.facebook.presto.bloomfilter;
 
 import com.facebook.presto.Session;
 import com.facebook.presto.testing.LocalQueryRunner;
+import com.facebook.presto.testing.QueryRunner;
 import com.facebook.presto.tests.AbstractTestQueryFramework;
+import com.facebook.presto.tests.AbstractTestQueryFramework.QueryRunnerSupplier;
 import com.facebook.presto.tpch.TpchConnectorFactory;
 import com.google.common.collect.ImmutableMap;
 import io.airlift.slice.Slices;
@@ -133,7 +135,7 @@ public class TestBloomFilterQueries
         server.stop();
     }
 
-    private static LocalQueryRunner createQueryRunner()
+    private static LocalQueryRunnerSupplier createQueryRunner()
     {
         try {
             Session defaultSession = testSessionBuilder()
@@ -154,10 +156,25 @@ public class TestBloomFilterQueries
             localQueryRunner.getTypeManager().addParametricType(new BloomFilterParametricType());
             localQueryRunner.getMetadata().addFunctions(extractFunctions(new BloomFilterPlugin().getFunctions()));
 
-            return localQueryRunner;
+            return new LocalQueryRunnerSupplier(localQueryRunner);
         }
         catch (Exception e) {
             throw new RuntimeException(e);
+        }
+    }
+
+    private static class LocalQueryRunnerSupplier implements QueryRunnerSupplier
+    {
+        private final LocalQueryRunner queryRunner;
+
+        public LocalQueryRunnerSupplier(LocalQueryRunner queryRunner)
+        {
+            this.queryRunner = queryRunner;
+        }
+
+        public QueryRunner get()
+        {
+            return queryRunner;
         }
     }
 }
