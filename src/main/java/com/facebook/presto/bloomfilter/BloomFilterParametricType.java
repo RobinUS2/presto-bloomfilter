@@ -15,6 +15,7 @@ package com.facebook.presto.bloomfilter;
 
 import com.facebook.presto.spi.type.ParametricType;
 import com.facebook.presto.spi.type.Type;
+import com.facebook.presto.spi.type.TypeManager;
 import com.facebook.presto.spi.type.TypeParameter;
 
 import java.util.List;
@@ -31,7 +32,7 @@ public class BloomFilterParametricType
     }
 
     @Override
-    public Type createType(List<TypeParameter> types)
+    public Type createType(TypeManager typeManager, List<TypeParameter> types)
     {
         return new BloomFilterType();
     }
