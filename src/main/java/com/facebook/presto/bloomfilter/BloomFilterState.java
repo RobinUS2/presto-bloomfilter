@@ -19,7 +19,8 @@ import com.facebook.presto.spi.function.AccumulatorStateMetadata;
 import javax.validation.constraints.NotNull;
 
 @AccumulatorStateMetadata(stateSerializerClass = BloomFilterStateSerializer.class, stateFactoryClass = BloomFilterStateFactory.class)
-public interface BloomFilterState extends AccumulatorState
+public interface BloomFilterState
+        extends AccumulatorState
 {
     @NotNull
     BloomFilter getBloomFilter();

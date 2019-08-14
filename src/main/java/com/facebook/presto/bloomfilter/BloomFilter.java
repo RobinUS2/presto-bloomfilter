@@ -55,7 +55,7 @@ public class BloomFilter
     private orestes.bloomfilter.BloomFilter instance;
     private int expectedInsertions;
     private double falsePositivePercentage;
-    private long preMiss = 0;
+    private long preMiss;
 
     private static final boolean USE_PRE_FILTER = true;
 

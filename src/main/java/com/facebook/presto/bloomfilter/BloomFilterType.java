@@ -22,7 +22,8 @@ import com.facebook.presto.spi.type.TypeSignature;
 import com.fasterxml.jackson.annotation.JsonCreator;
 import io.airlift.slice.Slice;
 
-public class BloomFilterType extends AbstractVariableWidthType
+public class BloomFilterType
+        extends AbstractVariableWidthType
 {
     public static final BloomFilterType BLOOM_FILTER = new BloomFilterType();
     public static final String TYPE = "BloomFilter";
