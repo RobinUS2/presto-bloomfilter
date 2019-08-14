@@ -7,11 +7,11 @@
     <parent><!-- do we need this -->
         <groupId>com.facebook.presto</groupId>
         <artifactId>presto-root</artifactId>
-        <version>0.175</version>
+        <version>0.203</version>
     </parent>
 
     <artifactId>presto-bloomfilter</artifactId>
-    <version>0.175</version>
+    <version>0.203</version>
     <packaging>presto-plugin</packaging>
 
     <properties>
@@ -68,31 +68,31 @@
             <artifactId>presto-array</artifactId>
         </dependency>
 
-     <!-- Presto SPI -->
+        <!-- Presto SPI -->
         <dependency>
             <groupId>com.facebook.presto</groupId>
             <artifactId>presto-spi</artifactId>
             <scope>provided</scope>
         </dependency>
- 
+
         <dependency>
             <groupId>io.airlift</groupId>
             <artifactId>slice</artifactId>
             <scope>provided</scope>
         </dependency>
- 
+
         <dependency>
             <groupId>io.airlift</groupId>
             <artifactId>units</artifactId>
             <scope>provided</scope>
         </dependency>
- 
+
         <dependency>
             <groupId>org.openjdk.jol</groupId>
             <artifactId>jol-core</artifactId>
             <scope>provided</scope>
         </dependency>
- 
+
         <dependency>
             <groupId>com.fasterxml.jackson.core</groupId>
             <artifactId>jackson-annotations</artifactId>
@@ -138,10 +138,10 @@
             <scope>test</scope>
         </dependency>
 
-	<dependency>
+        <dependency>
             <groupId>com.facebook.presto</groupId>
             <artifactId>presto-main</artifactId>
-	    <scope>test</scope>
+            <scope>test</scope>
         </dependency>
     </dependencies>
 
@@ -156,10 +156,10 @@
     </dependencyManagement>
 
     <repositories>
-  <repository>
-    <id>spring-milestones</id>
-    <url>http://repo.spring.io/libs-milestone/</url>
-  </repository>
+        <repository>
+            <id>spring-milestones</id>
+            <url>http://repo.spring.io/libs-milestone/</url>
+        </repository>
     </repositories>
 
 </project>
