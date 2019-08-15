@@ -21,7 +21,8 @@ import io.airlift.slice.Slice;
 import static com.facebook.presto.spi.type.StandardTypes.VARCHAR;
 
 @AggregationFunction(value = "bloom_filter_from_string")
-public class BloomFilterFromString extends AbstractBloomFilterAggregation
+public class BloomFilterFromString
+        extends AbstractBloomFilterAggregation
 {
     private BloomFilterFromString()
     {

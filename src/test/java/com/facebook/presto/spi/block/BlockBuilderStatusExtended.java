@@ -11,21 +11,13 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.facebook.presto.bloomfilter;
+package com.facebook.presto.spi.block;
 
-import com.facebook.presto.spi.function.AccumulatorState;
-import com.facebook.presto.spi.function.AccumulatorStateMetadata;
-
-import javax.validation.constraints.NotNull;
-
-@AccumulatorStateMetadata(stateSerializerClass = BloomFilterStateSerializer.class, stateFactoryClass = BloomFilterStateFactory.class)
-public interface BloomFilterState
-        extends AccumulatorState
+public class BlockBuilderStatusExtended
+        extends BlockBuilderStatus
 {
-    @NotNull
-    BloomFilter getBloomFilter();
-
-    void setBloomFilter(BloomFilter value);
-
-    void addMemoryUsage(int value);
+    public BlockBuilderStatusExtended(PageBuilderStatus pageBuilderStatus)
+    {
+        super(pageBuilderStatus);
+    }
 }

@@ -40,11 +40,11 @@ public class AbstractBloomFilterAggregation
         double fpp = BloomFilter.DEFAULT_BLOOM_FILTER_FALSE_POSITIVE_PERCENTAGE;
         if (state.getBloomFilter() == null && otherState.getBloomFilter() != null) {
             ei = otherState.getBloomFilter().getExpectedInsertions();
-            fpp  = otherState.getBloomFilter().getFalsePositivePercentage();
+            fpp = otherState.getBloomFilter().getFalsePositivePercentage();
         }
         else if (otherState.getBloomFilter() == null && state.getBloomFilter() != null) {
             ei = state.getBloomFilter().getExpectedInsertions();
-            fpp  = state.getBloomFilter().getFalsePositivePercentage();
+            fpp = state.getBloomFilter().getFalsePositivePercentage();
         }
         BloomFilter bfState = getOrCreateBloomFilter(state, ei, fpp);
         BloomFilter bfOther = getOrCreateBloomFilter(otherState, ei, fpp);

@@ -23,7 +23,6 @@ import io.airlift.log.Logger;
 
 import javax.inject.Inject;
 
-import java.util.Objects;
 import java.util.Set;
 
 public class BloomFilterPlugin
@@ -34,7 +33,9 @@ public class BloomFilterPlugin
     @Inject
     public void setTypeManager(TypeManager typeManager)
     {
-        Objects.requireNonNull(typeManager, "typeManager is null");
+        if (typeManager == null) {
+            throw new NullPointerException("typeManager is null");
+        }
         log.info("Received type manager");
     }
 

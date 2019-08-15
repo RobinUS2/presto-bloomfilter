@@ -17,9 +17,8 @@ import com.facebook.presto.array.ObjectBigArray;
 import com.facebook.presto.spi.function.AccumulatorStateFactory;
 import com.facebook.presto.spi.function.GroupedAccumulatorState;
 
-import java.util.Objects;
-
-public class BloomFilterStateFactory implements AccumulatorStateFactory<BloomFilterState>
+public class BloomFilterStateFactory
+        implements AccumulatorStateFactory<BloomFilterState>
 {
     @Override
     public BloomFilterState createSingleState()
@@ -73,7 +72,9 @@ public class BloomFilterStateFactory implements AccumulatorStateFactory<BloomFil
         @Override
         public void setBloomFilter(BloomFilter value)
         {
-            Objects.requireNonNull(value, "value is null");
+            if (value == null) {
+                throw new NullPointerException("value is null");
+            }
             bfs.set(groupId, value);
         }
 

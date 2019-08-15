@@ -15,6 +15,8 @@ package com.facebook.presto.bloomfilter;
 
 import com.facebook.presto.spi.block.BlockBuilder;
 import com.facebook.presto.spi.block.BlockBuilderStatus;
+import com.facebook.presto.spi.block.BlockBuilderStatusExtended;
+import com.facebook.presto.spi.block.PageBuilderStatus;
 import com.facebook.presto.spi.block.VariableWidthBlockBuilder;
 import io.airlift.slice.Slices;
 import org.testng.annotations.Test;
@@ -93,7 +95,7 @@ public class TestBloomFilterAggregation
         BloomFilterStateFactory f = new BloomFilterStateFactory();
         BloomFilterState state = f.createSingleState();
         BloomFilterAggregation.input(state, Slices.utf8Slice("robin"));
-        BlockBuilderStatus bbs = new BlockBuilderStatus();
+        BlockBuilderStatus bbs = new BlockBuilderStatusExtended(new PageBuilderStatus());
         BlockBuilder bb = new VariableWidthBlockBuilder(bbs, 1, 5); // @todo check 1 and 5 params
         BloomFilterAggregation.output(state, bb);
 
