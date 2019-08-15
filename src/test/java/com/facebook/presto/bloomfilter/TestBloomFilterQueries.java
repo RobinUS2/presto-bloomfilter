@@ -163,7 +163,8 @@ public class TestBloomFilterQueries
         }
     }
 
-    private static class LocalQueryRunnerSupplier implements QueryRunnerSupplier
+    private static class LocalQueryRunnerSupplier
+            implements QueryRunnerSupplier
     {
         private final LocalQueryRunner queryRunner;
 

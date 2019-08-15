@@ -23,7 +23,6 @@ import io.airlift.log.Logger;
 
 import javax.inject.Inject;
 
-import java.util.Objects;
 import java.util.Set;
 
 public class BloomFilterPlugin

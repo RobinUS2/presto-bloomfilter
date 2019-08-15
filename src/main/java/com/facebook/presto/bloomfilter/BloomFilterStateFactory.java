@@ -17,8 +17,6 @@ import com.facebook.presto.array.ObjectBigArray;
 import com.facebook.presto.spi.function.AccumulatorStateFactory;
 import com.facebook.presto.spi.function.GroupedAccumulatorState;
 
-import java.util.Objects;
-
 public class BloomFilterStateFactory
         implements AccumulatorStateFactory<BloomFilterState>
 {

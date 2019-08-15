@@ -19,8 +19,8 @@ import org.testng.annotations.Test;
 
 import java.util.Date;
 
-import static org.testng.Assert.assertNotNull;
 import static org.testng.Assert.assertFalse;
+import static org.testng.Assert.assertNotNull;
 import static org.testng.Assert.assertTrue;
 
 public class TestBloomFilterSerialization
