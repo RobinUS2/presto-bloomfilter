@@ -1,4 +1,5 @@
 #!/bin/bash
+
 #
 # Set this to your Java installation
 JAVA_HOME=/usr
