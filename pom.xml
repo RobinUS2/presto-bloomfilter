@@ -110,7 +110,7 @@
             <groupId>org.eclipse.jetty</groupId>
             <artifactId>jetty-server</artifactId>
             <scope>test</scope>
-            <version>9.3.13.M0</version>
+            <version>10.0.10</version>
         </dependency>
 
         <dependency>
